@@ -5,7 +5,7 @@ from recorders.leap import Leap
 
 
 class GestureRecorder:
-    def __init__(self, buffer_length: int = 1000):
+    def __init__(self, buffer_length: Union[int, None] = None):
         self._last_id = -1
 
         self._controller = Leap.Controller()
@@ -27,9 +27,12 @@ class GestureRecorder:
             if not frame.hands.is_empty:
                 hand_position = frame.hands.rightmost.palm_position
                 self._frames.append((frame.timestamp,) + hand_position.to_tuple())
-                if len(self._frames) > self._buffer_length:
+                if self._buffer_length is not None and len(self._frames) > self._buffer_length:
                     self._frames.popleft()
             self._last_id = frame.id
+
+    def reset(self):
+        self._frames = deque()
 
     def get_frames(self, num_frames: Union[int, None] = None):
         if num_frames is None or num_frames > self._buffer_length:

@@ -20,6 +20,10 @@ class Gesture:
     def num_frames(self):
         return len(self._frames)
 
+    @property
+    def time(self):
+        return self._frames[-1][0] - self._frames[0][0] if len(self._frames) > 0 else 0
+
     def to_numpy(self):
         return np.array(self._frames)
 
@@ -28,7 +32,10 @@ class GestureDatabase:
     def __init__(self, filepath: str = "gesture_data.pkl"):
         self._filepath = filepath
         self._data = {}
-        # self.load_data()
+        try:
+            self.load_data()
+        except FileNotFoundError:
+            self.save_data()
 
     @property
     def num_labels(self):
@@ -38,10 +45,22 @@ class GestureDatabase:
     def data(self):
         return self._data
 
+    @property
+    def labels(self):
+        return set(self._data.keys())
+
     def add_template(self, label: str, template: Gesture):
         if label not in self._data:
             self._data[label] = []
         self._data[label].append(template)
+
+    def iter_templates(self):
+        """
+        Yields every (label, template) pair
+        """
+        for label, templates in self._data.items():
+            for template in templates:
+                yield label, template
 
     def save_data(self):
         with open(self._filepath, "wb") as f:
