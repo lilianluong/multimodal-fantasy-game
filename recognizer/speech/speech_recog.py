@@ -15,7 +15,7 @@ def speech_recog_test():
 
     print("Audio Files:")
 
-    harvard = sr.AudioFile('speech/audio_files_harvard.wav')
+    harvard = sr.AudioFile('audio_files_harvard.wav')
 
     with harvard as source:
         audio0 = r.record(source)
@@ -32,7 +32,7 @@ def speech_recog_test():
     print(r.recognize_google(audio2))
 
 
-    jackhammer = sr.AudioFile('speech/audio_files_jackhammer.wav')
+    jackhammer = sr.AudioFile('audio_files_jackhammer.wav')
     with jackhammer as source:
         r.adjust_for_ambient_noise(source)
         audio3 = r.record(source)
