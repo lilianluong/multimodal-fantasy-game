@@ -6,9 +6,17 @@ from multiprocessing import Process
 def async_record_process(seconds, queue):
     mic = sr.Microphone()
     recognizer = sr.Recognizer()
-    with mic as source:
-        audio = recognizer.listen(source, phrase_time_limit=seconds)
-    result = recognizer.recognize_google(audio)
+    try:
+        with mic as source:
+            audio = recognizer.listen(source, timeout=seconds + 2, phrase_time_limit=seconds)
+        try:
+            result = recognizer.recognize_google(audio)
+        except sr.UnknownValueError:
+            print("Couldn't recognize audio")
+            result = None
+    except sr.WaitTimeoutError:
+        print("Recording timed out")
+        result = None
     queue.put(result)
 
 

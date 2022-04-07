@@ -22,5 +22,4 @@ def modified_hausdorff_distance(a: np.ndarray, b: np.ndarray) -> float:
     difference = a[:, None, :] - b[None, :, :]
     distance = np.sqrt(np.sum(difference ** 2, axis=2))
     result = np.mean(np.min(distance, axis=1))
-    print(result)
     return result

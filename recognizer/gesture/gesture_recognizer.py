@@ -50,7 +50,7 @@ def recognize_gesture_brute_force(frames: List[Tuple], db: GestureDatabase) -> D
                 break
         if label not in scores or best_score < scores[label]:
             scores[label] = best_score
-            plot_frames(template_arr, np.array(normalize_frames(frames[best_window[0]:best_window[1]+1])))
+            # plot_frames(template_arr, np.array(normalize_frames(frames[best_window[0]:best_window[1]+1])))
     return scores
 
 
