@@ -1,7 +1,7 @@
 from trigger.trigger_recognizer import TriggerRecognizer
 
 if __name__ == "__main__":
-    trigger_recognizer = TriggerRecognizer()
+    trigger_recognizer = TriggerRecognizer(use_gesture=True, use_speech=True)
     i = 1
     while True:
         print("It's your turn! Turn", i)
