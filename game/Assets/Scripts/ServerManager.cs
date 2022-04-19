@@ -8,22 +8,20 @@ using Newtonsoft.Json;
 public class ServerManager : MonoBehaviour
 {
     private bool waitingForRequest;
-    private int pollCounter;
 
     // Start is called before the first frame update
     void Start()
     {
-        pollCounter = -1;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (pollCounter == 0) StartTurn(5.0f);
-        else PollTurn();
+
     }
 
-    private void PollTurn()
+    public bool PollTurn()
     {
         if (!waitingForRequest)
         {
@@ -37,16 +35,16 @@ public class ServerManager : MonoBehaviour
                 else
                 {
                     Debug.Log($"GET request returned: {req.downloadHandler.text}");
-                    PollTurnResponse response = JsonConvert.DeserializeObject<PollTurnResponse>(req.downloadHandler.text);
-                    if (response.counter.HasValue) pollCounter = response.counter.Value;
-                    else pollCounter = 0;
+                    // PollTurnResponse response = JsonConvert.DeserializeObject<PollTurnResponse>(req.downloadHandler.text);
                 }
                 waitingForRequest = false;
             }));
+            return true;
         }
+        return false;
     }
 
-    private void StartTurn(float turnLength)
+    public bool StartTurn(float turnLength)
     {
         if (!waitingForRequest)
         {
@@ -62,11 +60,17 @@ public class ServerManager : MonoBehaviour
                 else
                 {
                     Debug.Log($"POST request returned: {req.downloadHandler.text}");
-                    pollCounter = -1;
                 }
                 waitingForRequest = false;
             }));
+            return true;
         }
+        return false;
+    }
+
+    public bool CanMakeRequest()
+    {
+        return !waitingForRequest;
     }
 
     IEnumerator GetRequest(string url, Action<UnityWebRequest> callback)
