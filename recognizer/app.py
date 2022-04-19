@@ -1,6 +1,10 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+
+
+class GlobalData:
+    counter = 0
 
 
 @app.route("/")
@@ -20,7 +24,10 @@ def get_poll_turn():
         ...
     }
     """
-    return {}
+    GlobalData.counter = (GlobalData.counter + 1) % 5
+    return jsonify(
+        counter=GlobalData.counter if GlobalData.counter > 0 else None,
+    )
 
 
 @app.route("/api/startTurn", methods=["POST"])
@@ -30,7 +37,7 @@ def post_start_turn():
     If a turn is already going, ignore its result and start a new one.
     :return: True if succeeded
     """
-    return False
+    return f"got request for {request.form['turnLength']} seconds"
 
 
 def start_system():
