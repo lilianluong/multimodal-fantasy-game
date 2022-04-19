@@ -3,32 +3,48 @@ from typing import Union
 
 import config
 from gesture.gesture_recognizer import recognize_gesture
+from gesture.hardcoded_gestures import hardcoded_gestures
 from gesture.gesture_types import GestureDatabase
-from recorders.gesture_recorder import GestureRecorder
 from speech.speech_recorder import start_speech_process, get_speech_result
 from trigger.trigger_database import TriggerDatabase
 
 
 class TriggerRecognizer:
-    def __init__(self):
+    def __init__(self, use_gesture = True, use_speech = True):
         self._gesture_db = GestureDatabase()
         self._trigger_db = TriggerDatabase()
-        self._gesture_recorder = GestureRecorder()
+        if use_gesture:
+            from recorders.gesture_recorder import GestureRecorder
+            self._gesture_recorder = GestureRecorder()
 
-    def take_turn(self) -> Union[str, None]:
-        # Record speech and gesture
-        speech_process = start_speech_process(config.TURN_SECONDS)
-        # print("Recording...")
-        speech_result = False
-        while speech_result is False:
-            for _ in range(config.LEAP_AUDIO_RECORD_RATIO):
-                self._gesture_recorder.update()
-            speech_result = get_speech_result(*speech_process)
-
+    def take_turn(self, use_gesture = True, use_speech = True) -> Union[str, None]:
+        # Check if using speech, record
+        if use_speech:
+            # Record speech and gesture
+            speech_process = start_speech_process(config.TURN_SECONDS)
+            # print("Recording...")
+            speech_result = False
+            while speech_result is False:
+                for _ in range(config.LEAP_AUDIO_RECORD_RATIO):
+                    if use_gesture: self._gesture_recorder.update()
+                    else: continue
+                speech_result = get_speech_result(*speech_process)
+        else:
+            # Hardcoded speech
+            speech_result = "attack"
+            
         print("Speech result:", speech_result)
 
-        gesture_frames = self._gesture_recorder.get_frames()
-        self._gesture_recorder.reset()
+        # Check if using gesture, record
+        if use_gesture:
+            from recorders.gesture_recorder import GestureRecorder
+            gesture_frames = self._gesture_recorder.get_frames()
+            self._gesture_recorder.reset()
+        else:
+            # Hardcoded gesture
+            gesture_frames = hardcoded_gestures["horizontal_line"][0]
+        
+        # Check if data recorded
         if not len(gesture_frames):
             print("No gesture detected")
             return None, None
