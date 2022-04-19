@@ -1,5 +1,5 @@
-# import time
-from typing import Union
+import time
+from typing import Tuple, Union
 
 import config
 from gesture.gesture_recognizer import recognize_gesture
@@ -53,12 +53,16 @@ class TriggerRecognizer:
             return None, None
 
         # Process speech
-        speech_result = str(speech_result).lower()
-        valid_speech_labels = set()
-        for label in self._trigger_db.labels:
-            for incantation in self._trigger_db.get_phrase(label):
-                if incantation in speech_result:
-                    valid_speech_labels.add(label)
+        if self._use_speech:
+            speech_result = str(speech_result).lower()
+            valid_speech_labels = set()
+            for label in self._trigger_db.labels:
+                for incantation in self._trigger_db.get_phrase(label):
+                    if incantation in speech_result:
+                        valid_speech_labels.add(label)
+        else:
+            # replace with hardcoded speech labels
+            valid_speech_labels = {"attack"}
 
         # Process gesture
         gesture_result = recognize_gesture(gesture_frames, self._gesture_db)
