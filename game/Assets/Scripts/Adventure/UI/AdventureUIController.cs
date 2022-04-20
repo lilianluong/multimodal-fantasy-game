@@ -29,6 +29,11 @@ public class AdventureUIController : MonoBehaviour
         SceneManager.LoadScene("SpellTutor");
     }
 
+    public void UpdateTurnTimer(float timeRemaining)
+    {
+        // TODO: Update the UI's turn timer
+    }
+
     public void UpdateSpellLog(SpellcastInfo? spellcastInfo)
     {
         if (!spellcastInfo.HasValue)

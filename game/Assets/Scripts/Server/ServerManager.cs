@@ -9,10 +9,19 @@ public class ServerManager : MonoBehaviour
 {
     private bool waitingForRequest;
 
+    // State and responses
+    public bool StartedTurn { get; set; }
+    public bool PolledTurn { get; set; }
+
+    private PollTurnResponse pollResponse;
+    public PollTurnResponse PollResponse => pollResponse;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        StartedTurn = false;
+        PolledTurn = false;
+        pollResponse = null;
     }
 
     // Update is called once per frame
@@ -35,7 +44,8 @@ public class ServerManager : MonoBehaviour
                 else
                 {
                     Debug.Log($"GET request returned: {req.downloadHandler.text}");
-                    // PollTurnResponse response = JsonConvert.DeserializeObject<PollTurnResponse>(req.downloadHandler.text);
+                    pollResponse = JsonConvert.DeserializeObject<PollTurnResponse>(req.downloadHandler.text);
+                    PolledTurn = true;
                 }
                 waitingForRequest = false;
             }));
@@ -60,6 +70,7 @@ public class ServerManager : MonoBehaviour
                 else
                 {
                     Debug.Log($"POST request returned: {req.downloadHandler.text}");
+                    StartedTurn = true;
                 }
                 waitingForRequest = false;
             }));
