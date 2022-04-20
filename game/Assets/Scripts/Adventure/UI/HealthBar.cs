@@ -7,12 +7,14 @@ public class HealthBar : MonoBehaviour
 {
     // References
     public RectTransform foregroundBarTransform;
-    public Text healthText;
+    public Text nameText, healthText;
+
+    private float totalHealth = 100f;
 
     // Start is called before the first frame update
     void Start()
     {
-        SetHealth(27f, 100f);
+        SetHealth(27f);
     }
 
     // Update is called once per frame
@@ -21,9 +23,22 @@ public class HealthBar : MonoBehaviour
 
     }
 
+    public void SetName(string name)
+    {
+        nameText.text = name;
+    }
+
     public void SetHealth(float health, float totalHealth)
+    {
+        this.totalHealth = totalHealth;
+        SetHealth(health);
+    }
+
+    public void SetHealth(float health)
     {
         foregroundBarTransform.localScale = new Vector3(Mathf.Min(1f, health / totalHealth), 1f, 1f);
         healthText.text = $"{(int)health}/{(int)totalHealth}";
     }
+
+
 }

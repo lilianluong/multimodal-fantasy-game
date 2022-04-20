@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foregroundBarTransform: {fileID: 5583001330743642855}
+  nameText: {fileID: 1253034505438077847}
   healthText: {fileID: 559535947265729775}
 --- !u!1 &5583001329654034154
 GameObject:
