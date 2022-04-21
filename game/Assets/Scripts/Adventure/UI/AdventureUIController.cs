@@ -34,6 +34,8 @@ public class AdventureUIController : MonoBehaviour
         // TODO: Update the UI's turn timer
     }
 
+    // public void CreateNotifier(string)
+
     public void UpdateSpellLog(SpellcastInfo? spellcastInfo)
     {
         if (!spellcastInfo.HasValue)
