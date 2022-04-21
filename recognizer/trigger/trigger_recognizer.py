@@ -17,7 +17,7 @@ class TriggerRecognizer:
             from recorders.gesture_recorder import GestureRecorder
             self._gesture_recorder = GestureRecorder()
 
-    def take_turn(self, use_gesture = True, use_speech = True) -> Union[str, None]:
+    def take_turn(self, use_gesture = True, use_speech = True, verbose = 1) -> Union[str, None]:
         # Check if using speech, record
         if use_speech:
             # Record speech and gesture
@@ -33,7 +33,7 @@ class TriggerRecognizer:
             # Hardcoded speech
             speech_result = "attack"
             
-        print("Speech result:", speech_result)
+        if verbose > 0: print("Speech result:", speech_result)
 
         # Check if using gesture, record
         if use_gesture:
@@ -41,19 +41,19 @@ class TriggerRecognizer:
             gesture_frames = self._gesture_recorder.get_frames()
             self._gesture_recorder.reset()
         else:
-            # Hardcoded gesture
+            # Replace with hardcoded gesture frames
             gesture_frames = hardcoded_gestures["horizontal_line"][0]
         
         # Check if data recorded
         if not len(gesture_frames):
-            print("No gesture detected")
-            return None, None
+            if verbose > 0: print("No gesture detected")
+            return None, None, None
         if speech_result is None:
-            print("No audio detected")
-            return None, None
+            if verbose > 0: print("No audio detected")
+            return None, None, None
 
         # Process speech
-        if self._use_speech:
+        if use_speech:
             speech_result = str(speech_result).lower()
             valid_speech_labels = set()
             for label in self._trigger_db.labels:
@@ -61,12 +61,12 @@ class TriggerRecognizer:
                     if incantation in speech_result:
                         valid_speech_labels.add(label)
         else:
-            # replace with hardcoded speech labels
+            # Replace with hardcoded speech labels
             valid_speech_labels = {"attack"}
 
         # Process gesture
         gesture_result = recognize_gesture(gesture_frames, self._gesture_db)
-        print("Gesture result:", gesture_result)
+        if verbose > 0: print("Gesture result:", gesture_result)
 
         # Combine results
         best_label = None
@@ -77,4 +77,4 @@ class TriggerRecognizer:
                 best_score = gesture_result[gesture_label]
                 best_label = label
 
-        return best_label, best_score
+        return best_label, best_score, speech_result
