@@ -46,7 +46,7 @@ class TriggerRecognizer:
         # Check if data recorded
         if not len(gesture_frames):
             if verbose > 0: print("No gesture detected")
-            return None, None, None
+            return None, None, speech_result
         if speech_result is None:
             if verbose > 0: print("No audio detected")
             return None, None, None
