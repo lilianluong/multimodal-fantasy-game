@@ -2,7 +2,7 @@ from trigger.trigger_recognizer import TriggerRecognizer
 import sys
 
 if __name__ == "__main__":
-    argumentList = sys.argv[1:]
+    argumentList = sys.argv[1:]  # + ["--no_gesture"]
     use_gesture = False if "--no_gesture" in argumentList else True
     use_speech = False if "--no_speech" in argumentList else True
     
