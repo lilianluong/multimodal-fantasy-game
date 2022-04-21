@@ -22,7 +22,6 @@ class TriggerRecognizer:
         if use_speech:
             # Record speech and gesture
             speech_process = start_speech_process(config.TURN_SECONDS)
-            # print("Recording...")
             speech_result = False
             while speech_result is False:
                 for _ in range(config.LEAP_AUDIO_RECORD_RATIO):
