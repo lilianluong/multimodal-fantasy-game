@@ -96,7 +96,7 @@ class Character:
     
     def random_spell(self, enemy):
         spell = random.choice(self._known_spells)
-        effects = self.spell_effects(enemy, 1, spell)
+        effects = self.spell_effects(enemy, 0.5, spell)
         return spell, effects
     
     def spell_effects(self, enemy, score, spell):

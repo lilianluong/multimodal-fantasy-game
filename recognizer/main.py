@@ -16,7 +16,7 @@ def move_tutor(trigger_recognizer):
     # Handle state switches
     if speech is None:
         return "move_tutor"
-    elif "begin game" in speech.lower():
+    elif "begin" in speech.lower():
         return "round"
     elif "tutorial" in speech.lower():
         return "game_tutorial"
@@ -40,7 +40,7 @@ def game_tutorial(player):
     # Return to move tutor
     return "move_tutor"
 
-def round(trigger_recognizer, player, enemy, i):
+def round(trigger_recognizer, player, enemy, i, spell_dict):
     if i == 1:
         round_one(trigger_recognizer, player, enemy)
         
@@ -54,10 +54,14 @@ def round(trigger_recognizer, player, enemy, i):
     if result is None:
         PrintColors.print_paragraph2_text("No spell detected, try again. Audio: " + str(speech))
     else:
-        PrintColors.print_paragraph2_text("SPELL CAST: " + str(result) + ", SCORE: " + str(score))
+        PrintColors.print_paragraph2_text("SPELL CAST: " + str(result) + ", SCORE: " + str(max(0, 1 - score)))
+        player_spell = spell_dict[result]
+        player_spell_effects = player.spell_effects(enemy, max(0, 1 - score), player_spell)
+        PrintColors.print_paragraph2_text(player_spell_effects)
         PrintColors.print_subheader_row()
         PrintColors.print_paragraph_text("Enemy turn!")
         enemy_spell, enemy_spell_effects = enemy.random_spell(player)
+        PrintColors.print_paragraph2_text("SPELL CAST: " + str(enemy_spell) + ", SCORE: " + str(0.5))
         PrintColors.print_paragraph2_text(enemy_spell_effects)
     
     if enemy.hp == 0:
@@ -115,6 +119,7 @@ if __name__ == "__main__":
     attack = Spell("attack", 10, 0, 0)
     heal = Spell("heal", 0, 30, 0)
     shield = Spell("shield", 0, 0, 20)
+    spell_dict = {"attack": attack, "heal": heal, "shield": shield}
     
     trigger_recognizer = TriggerRecognizer(use_gesture, use_speech)
     i = 1
@@ -132,7 +137,7 @@ if __name__ == "__main__":
         elif state == "game_tutorial":
             state = game_tutorial(player)
         elif state == "round":
-            state = round(trigger_recognizer, player, enemy, i)
+            state = round(trigger_recognizer, player, enemy, i, spell_dict)
             i += 1
         elif state == "end_game":
             print("Game ended.")
