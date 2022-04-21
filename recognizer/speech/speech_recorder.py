@@ -2,12 +2,10 @@ import speech_recognition as sr
 import multiprocessing
 from multiprocessing import Process
 
-mic = sr.Microphone()
-recognizer = sr.Recognizer()
-
 
 def async_record_process(seconds, queue):
-    print("Recording...")
+    mic = sr.Microphone()
+    recognizer = sr.Recognizer()
     try:
         with mic as source:
             audio = recognizer.listen(source, timeout=seconds + 2, phrase_time_limit=seconds)
