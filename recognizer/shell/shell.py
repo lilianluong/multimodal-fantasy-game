@@ -67,41 +67,41 @@ class PrintColors:
             print('\n')
     
     def print_header_row():
-        print(PrintColors.CBLACK + PrintColors.CWHITEBG2 + ' '*100 + PrintColors.CEND)
+        print(PrintColors.CWHITE2 + PrintColors.CBLACKBG + ' '*100 + PrintColors.CEND)
     
     def print_header_text(text):
         pad = int((100 - len(text))/2)
-        print(PrintColors.CBLACK + PrintColors.CWHITEBG2 + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
+        print(PrintColors.CWHITE2 + PrintColors.CBLACKBG + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
     
     def print_subheader_row():
-        print(PrintColors.CBLACK + PrintColors.CWHITEBG + ' '*100 + PrintColors.CEND)
-    
+        print(PrintColors.CWHITE2 + PrintColors.CWHITEBG + ' '*100 + PrintColors.CEND)
+
     def print_subheader_text(text):
         pad = int((100 - len(text))/2)
-        print(PrintColors.CBLACK + PrintColors.CWHITEBG + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
+        print(PrintColors.CWHITE2 + PrintColors.CWHITEBG + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
     
     def print_subheader2_text(text):
         pad = int((100 - len(text))/2)
         print(PrintColors.CBLACK + PrintColors.CBOLD + PrintColors.CWHITEBG + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
     
     def print_subheader3_row():
-        print(PrintColors.CWHITE + PrintColors.CBLUEBG2 + ' '*100 + PrintColors.CEND)
+        print(PrintColors.CWHITE2 + PrintColors.CBLUEBG2 + ' '*100 + PrintColors.CEND)
     
     def print_subheader3_text(text):
         pad = int((100 - len(text))/2)
-        print(PrintColors.CWHITE + PrintColors.CBOLD + PrintColors.CBLUEBG2 + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
+        print(PrintColors.CWHITE2 + PrintColors.CBOLD + PrintColors.CBLUEBG2 + ' '*(pad) + text + ' '*(100-pad-len(text)) + PrintColors.CEND)
     
     def print_paragraph_text(text):
-        print(PrintColors.CBLUE2 + PrintColors.CBOLD + PrintColors.CWHITEBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
+        print(PrintColors.CBLUE + PrintColors.CBOLD + PrintColors.CBLACKBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
     
     def print_paragraph2_text(text):
-        print(PrintColors.CBLACK + PrintColors.CWHITEBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
+        print(PrintColors.CWHITE2 + PrintColors.CBLACKBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
         
     def print_red_text(text):
-        print(PrintColors.CRED + PrintColors.CWHITEBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
+        print(PrintColors.CRED + PrintColors.CBLACKBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
         
     def print_green_text(text):
-        print(PrintColors.CGREEN + PrintColors.CWHITEBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
+        print(PrintColors.CGREEN2 + PrintColors.CBLACKBG + ' '*(3) + text + ' '*(100-3-len(text)) + PrintColors.CEND)
         
     def print_char_details(character):
         basic_details = str("NAME: " + character.name + 
@@ -115,7 +115,7 @@ class PrintColors:
               ", WID: " + str(character._wisdom) +
               ", CHA: " + str(character._charisma))
         spells_details = str("SPELLS: " + ", ".join([str(s) for s in character._known_spells]))
-        print(PrintColors.CWHITE + PrintColors.CBOLD + PrintColors.CBLUEBG2 + 
+        print(PrintColors.CWHITE2 + PrintColors.CBOLD + PrintColors.CBLUEBG2 +
               ' '*(3) + basic_details + ' '*(97 - len(basic_details)) +
               PrintColors.CEND)
         print(PrintColors.CWHITE2 + PrintColors.CBLUEBG2 + 
