@@ -51,7 +51,9 @@ class Character:
         return self._race
     
     def damage(self, amt):
-        self._hp -= int(amt - self._shield)
+        if amt > 0:
+            amt = max(0, amt - self._shield)
+        self._hp -= int(amt)
         self._hp = max(0, self._hp)
     
     def heal(self, amt):
@@ -91,7 +93,7 @@ class Character:
         else:
             self._race = "human"
             
-        self._hp = self.level * (5 + self._constitution) * 20
+        self._hp = self.level * (5 + self._constitution) * 10
         self._max_hp = self._hp
     
     def random_spell(self, enemy):
