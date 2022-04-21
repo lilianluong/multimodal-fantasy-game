@@ -11,7 +11,7 @@ def move_tutor(trigger_recognizer):
     if result is None:
         PrintColors.print_paragraph2_text("No spell detected. Audio: " + str(speech))
     else:
-        PrintColors.print_paragraph2_text("SPELL CAST: " + str(result) + ", SCORE: " + str(score))
+        PrintColors.print_paragraph2_text("SPELL CAST: " + str(result) + ", SCORE: " + str(max(0, 1 - score)))
     
     # Handle state switches
     if speech is None:
