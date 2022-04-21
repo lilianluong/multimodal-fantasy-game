@@ -6,7 +6,8 @@ from multiprocessing import Process
 def async_record_process(seconds, queue):
     mic = sr.Microphone()
     recognizer = sr.Recognizer()
-    print("Recording")
+    # PrintColors.print_paragraph_text("Your turn!")
+    # print("Recording")
     try:
         with mic as source:
             audio = recognizer.listen(source, timeout=seconds + 2, phrase_time_limit=seconds)

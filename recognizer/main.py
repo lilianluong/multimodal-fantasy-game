@@ -7,7 +7,9 @@ import sys
 def move_tutor(trigger_recognizer):
     PrintColors.print_subheader_row()
     PrintColors.print_paragraph_text("Practice a move!")
-    result, score, speech = trigger_recognizer.take_turn(use_gesture, use_speech, verbose = 0)
+    speech = None
+    while speech is None:
+        result, score, speech = trigger_recognizer.take_turn(use_gesture, use_speech, verbose = 0)
     if result is None:
         PrintColors.print_paragraph2_text("No spell detected. Audio: " + str(speech))
     else:
@@ -32,7 +34,7 @@ def game_tutorial(player):
     PrintColors.print_subheader_text("an impact on the effectiveness of your spells as well as your enemy's spells on you.")
     PrintColors.print_subheader_text("Begin by practicing some of your available spells.")
     PrintColors.print_subheader_row()
-    PrintColors.print_subheader_text("At any point, say \"game tutorial\" to view these instructions,")
+    PrintColors.print_subheader_text("At any point, say \"game tutorial\" to view these instructions, \"begin game\" to fight an enemy,")
     PrintColors.print_subheader_text("\"move tutor\" to practice your moves, or \"end game\" to finish playing.")
     PrintColors.print_subheader_row()
     PrintColors.print_char_details(player)
@@ -49,7 +51,7 @@ def round(trigger_recognizer, player, enemy, i, spell_dict):
     print_hp(player, enemy)
     
     PrintColors.print_subheader_row()
-    PrintColors.print_paragraph_text("Your turn!")
+    # PrintColors.print_paragraph_text("Your turn!")
     result, score, speech = trigger_recognizer.take_turn(use_gesture, use_speech, verbose = 0)
     if result is None:
         PrintColors.print_paragraph2_text("No spell detected, try again. Audio: " + str(speech))
@@ -112,6 +114,7 @@ def print_hp(player, enemy):
                     ", SHIELD: " + str(player._shield))
 
 if __name__ == "__main__":
+    PrintColors.print_test()
     argumentList = sys.argv[1:]  # + ["--no_gesture"]
     use_gesture = False if "--no_gesture" in argumentList else True
     use_speech = False if "--no_speech" in argumentList else True
@@ -141,3 +144,4 @@ if __name__ == "__main__":
             i += 1
         elif state == "end_game":
             print("Game ended.")
+            break
