@@ -13,16 +13,38 @@ class GlobalData:
     heal = Spell("heal", 0, 30, 0)
     shield = Spell("shield", 0, 0, 20)
     spell_dict = {"attack": attack, "heal": heal, "shield": shield}
+    
     state = 'game_tutorial'
     player = Character("Player", 1, [attack, heal, shield])
     enemy = Character("Enemy", 1, [attack, heal, shield], race="werewolf")
     i = 1
     
-    def __str__(self):
-        return self.state
+    player_spell = None
+    player_score = 0
+    enemy_spell = None
+    enemy_score = 0.5
     
-    def move_tutor(trigger_recognizer):
+    def __str__(self):
+        return GlobalData.state
+    
+    def json():
+        return {"state": GlobalData.state,
+                "i": GlobalData.i,
+                "player": GlobalData.player,
+                "player_spell": GlobalData.player_spell,
+                "player_score": GlobalData.player_score,
+                "enemy": GlobalData.enemy,
+                "enemy_spell": GlobalData.enemy_spell,
+                "enemy_score": GlobalData.enemy_score}
+    
+    def move_tutor(trigger_recognizer, spell_dict):
         result, score, speech = trigger_recognizer.take_turn()
+        if result:
+            GlobalData.player_spell = spell_dict[result]
+            GlobalData.player_score = score
+        else:
+            GlobalData.player_spell = None
+            GlobalData.player_score = 0
         
         # Handle state switches
         if speech is None:
@@ -43,14 +65,20 @@ class GlobalData:
     def round(trigger_recognizer, player, enemy, i, spell_dict):
         result, score, speech = trigger_recognizer.take_turn()
         if result:
-            player_spell = spell_dict[result]
-            player_spell_effects = player.spell_effects(enemy, max(0, 1 - score), player_spell)
-            enemy_spell, enemy_spell_effects = enemy.random_spell(player)
+            GlobalData.player_spell = spell_dict[result]
+            GlobalData.player_score = score
+            player_spell_effects = player.spell_effects(enemy, max(0, 1 - score), GlobalData.player_spell)
+            GlobalData.enemy_spell, enemy_spell_effects = enemy.random_spell(player)
+        else:
+            GlobalData.player_spell = None
+            GlobalData.player_score = 0
+            GlobalData.enemy_spell = None
         
+        # Handle winning or losing
         if enemy.hp == 0:
-            state = "end_game"
+            return "end_game"
         elif player.hp == 0:
-            state = "end_game"
+            return "end_game"
         
         # Handle state switches
         if speech is None:
@@ -82,7 +110,7 @@ def get_poll_turn():
         ...
     }
     """
-    return jsonify()
+    return jsonify(GlobalData.json())
 
 
 @app.route("/api/startTurn", methods=["POST"])
@@ -109,7 +137,7 @@ def start_turn(turnLength: float):
     When results are obtained, save them in global variables for the endpoints to return
     """
     if GlobalData.state == "move_tutor":
-        GlobalData.state = GlobalData.move_tutor(GlobalData.trigger_recognizer)
+        GlobalData.state = GlobalData.move_tutor(GlobalData.trigger_recognizer, GlobalData.spell_dict)
     elif GlobalData.state == "game_tutorial":
         GlobalData.state = GlobalData.game_tutorial(GlobalData.player)
     elif GlobalData.state == "round":
