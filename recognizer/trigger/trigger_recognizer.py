@@ -17,11 +17,11 @@ class TriggerRecognizer:
             from recorders.gesture_recorder import GestureRecorder
             self._gesture_recorder = GestureRecorder()
 
-    def take_turn(self, use_gesture = True, use_speech = True, verbose = 1) -> Union[str, None]:
+    def take_turn(self, num_seconds=config.TURN_SECONDS, use_gesture = True, use_speech = True, verbose = 1) -> Tuple[Union[str, float, None], ...]:
         # Check if using speech, record
         if use_speech:
             # Record speech and gesture
-            speech_process = start_speech_process(config.TURN_SECONDS)
+            speech_process = start_speech_process(num_seconds)
             speech_result = False
             while speech_result is False:
                 for _ in range(config.LEAP_AUDIO_RECORD_RATIO):
@@ -46,7 +46,7 @@ class TriggerRecognizer:
         # Check if data recorded
         if not len(gesture_frames):
             if verbose > 0: print("No gesture detected")
-            return None, None, speech_result
+            return None, None, str(speech_result).lower()
         if speech_result is None:
             if verbose > 0: print("No audio detected")
             return None, None, None
