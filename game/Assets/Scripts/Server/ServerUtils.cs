@@ -10,7 +10,7 @@ public class PollTurnResponse
 
     public override string ToString()
     {
-        if (timeRemaining > 0) return $"Poll<Seconds Left: {timeRemaining}";
+        if (timeRemaining > 0) return $"Poll<Seconds Left: {timeRemaining}>";
         if (spellCast.Length == 0) return "Turn<No Spell>";
         return $"Turn<{spellCast}, {score}>";
     }

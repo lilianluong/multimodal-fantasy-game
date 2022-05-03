@@ -14,11 +14,17 @@ public class CharacterState
         health = character.MaxHealth;
     }
 
-    public (float, float) TakeDamage(float baseDamage)
+    public float TakeDamage(float baseDamage)
     {
         float actualDamage = baseDamage * character.DefenseMultiplier;
         health = Mathf.Max(0f, health - actualDamage);
-        return GetHealth();
+        return actualDamage;
+    }
+
+    public float Heal(float healAmount)
+    {
+        health = Mathf.Min(maxHealth, health + healAmount);
+        return healAmount;
     }
 
     public (float, float) GetHealth()

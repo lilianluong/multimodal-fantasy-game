@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2051581304790124269}
   - component: {fileID: 6125909393963671311}
   - component: {fileID: 3023906257586705317}
+  - component: {fileID: 6390244822290882070}
   m_Layer: 5
   m_Name: Notifier
   m_TagString: Untagged
@@ -94,3 +95,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floatSpeed: 50
   floatTime: 1.5
+--- !u!114 &6390244822290882070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229588284784121092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.6981132, g: 0.52292633, b: 0.52292633, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1

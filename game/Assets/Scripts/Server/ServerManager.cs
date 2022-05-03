@@ -16,6 +16,8 @@ public class ServerManager : MonoBehaviour
     private PollTurnResponse pollResponse;
     public PollTurnResponse PollResponse => pollResponse;
 
+    public bool debugMode = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +41,24 @@ public class ServerManager : MonoBehaviour
             {
                 if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    Debug.Log($"{req.error}: {req.downloadHandler.text}");
+                    if (debugMode)
+                    {
+                        float rand = UnityEngine.Random.value;
+                        pollResponse = new PollTurnResponse();
+                        if (rand > 0.2f)
+                        {
+                            pollResponse.timeRemaining = 2f;
+                        }
+                        else
+                        {
+                            pollResponse.timeRemaining = 0;
+                            pollResponse.spellCast = "attack";
+                            pollResponse.score = 0.8f;
+                        }
+                        Debug.Log($"Debug mode: {pollResponse.ToString()}");
+                        PolledTurn = true;
+                    }
+                    else Debug.Log($"{req.error}: {req.downloadHandler.text}");
                 }
                 else
                 {
@@ -65,7 +84,12 @@ public class ServerManager : MonoBehaviour
             {
                 if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    Debug.Log($"{req.error}: {req.downloadHandler.text}");
+                    if (debugMode)
+                    {
+                        StartedTurn = true;
+                        Debug.Log("Debug mode: starting turn");
+                    }
+                    else Debug.Log($"{req.error}: {req.downloadHandler.text}");
                 }
                 else
                 {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NotifierScript : MonoBehaviour
 {
-    public float floatSpeed = 50f, floatTime = 1.5f;
+    public float floatSpeed = 50f, floatTime = 1.2f;
 
     private float timeElapsed;
     private RectTransform myTransform;
@@ -21,6 +21,10 @@ public class NotifierScript : MonoBehaviour
     {
         myTransform.anchoredPosition = new Vector2(myTransform.anchoredPosition.x, myTransform.anchoredPosition.y + floatSpeed * Time.deltaTime);
         timeElapsed += Time.deltaTime;
-        if (timeElapsed > floatTime) Destroy(gameObject);
+        if (timeElapsed > floatTime)
+        {
+            AdventureController.Instance.animationState++;
+            Destroy(gameObject);
+        }
     }
 }

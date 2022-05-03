@@ -5,6 +5,7 @@ using UnityEngine;
 public class AdventureController : MonoBehaviour
 {
     // References
+    public static AdventureController Instance { get; set; }
     public AdventureUIController uiController;
     private ServerManager serverManager;
 
@@ -13,7 +14,7 @@ public class AdventureController : MonoBehaviour
     private CharacterState leftCharacterState, rightCharacterState;
 
     private AdventureState state;
-    private bool inAnimation;
+    public int animationState { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +24,8 @@ public class AdventureController : MonoBehaviour
         InitializeNewEncounter();
 
         state = AdventureState.Waiting;
-        inAnimation = false;
+        animationState = 0;
+        Instance = this;
     }
 
     // Update is called once per frame
@@ -55,12 +57,14 @@ public class AdventureController : MonoBehaviour
         }
         else if (state == AdventureState.PlayerTurn)
         {
-            if (inAnimation)
+            if (animationState == 3)
             {
                 state = AdventureState.EnemyTurn;
                 serverManager.PolledTurn = false;
+                animationState = 0;
                 return;
             }
+            else if (animationState > 0) return;
             // Player's turn! Just poll repeatedly until we get our result
             if (serverManager.CanMakeRequest())
             {
@@ -88,11 +92,13 @@ public class AdventureController : MonoBehaviour
         else if (state == AdventureState.EnemyTurn)
         {
             // Enemy's turn! Take an action.
-            if (inAnimation)
+            if (animationState == 2)
             {
                 state = AdventureState.Waiting;
+                animationState = 0;
                 return;
             }
+            else if (animationState > 0) return;
             HandleEnemyTurn();
         }
     }
@@ -100,22 +106,60 @@ public class AdventureController : MonoBehaviour
     private void HandlePlayerTurn(PollTurnResponse response)
     {
         Debug.Log("Player turn: " + response.ToString());
-        inAnimation = true;
+        switch (response.spellCast)
+        {
+            case "attack":
+                float dealtDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
+                uiController.CreateNotifier($"{rightCharacter.Name} took {(int)dealtDamage} damage", forPlayer: false);
+                uiController.ColorFlare(1f, 0f, 0f);
+                uiController.UpdateSpellLog(new SpellcastInfo("ATTACK", response.score, new SpellEffect(SpellEffectType.Damage, dealtDamage)));
+                break;
+            case "heal":
+                float healedAmount = leftCharacterState.Heal(response.score * 30);
+                uiController.CreateNotifier($"You healed for {(int)healedAmount} HP", forPlayer: true);
+                uiController.ColorFlare(0.2f, 1f, 0.2f);
+                uiController.UpdateSpellLog(new SpellcastInfo("HEAL", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
+                break;
+            default:
+                break;
+        }
+        uiController.GetPlayerHealthBar().SetHealth(leftCharacterState.GetHealth().Item1);
+        uiController.GetEnemyHealthBar().SetHealth(rightCharacterState.GetHealth().Item1);
+        animationState = 1;
     }
 
     private void HandleEnemyTurn()
     {
         Debug.Log("Enemy turn!");
-        inAnimation = true;
+        double randomNum = Random.value;
+
+        if (randomNum <= 1f)  // note that Random.value is [0f, 1f] INCLUSIVE for some inane reason
+        {
+            // Attack
+            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage);
+            uiController.CreateNotifier($"You took {(int)dealtDamage} damage", forPlayer: true);
+        }
+        // add extra cases if we want
+
+        uiController.GetPlayerHealthBar().SetHealth(leftCharacterState.GetHealth().Item1);
+        // uiController.GetEnemyHealthBar().SetHealth(rightCharacterState.GetHealth().Item1);
+        animationState = 1;
     }
 
     private void InitializeNewEncounter()
     {
         // Choose an enemy
-        rightCharacter = new Player();  // Replace with an enemy (instance of Character)
+        rightCharacter = new Werewolf();  // Replace with a random enemy (instance of Character)
         // Initialize CharacterState
         leftCharacterState = new CharacterState(leftCharacter);
         rightCharacterState = new CharacterState(rightCharacter);
+
+        // Set health bars
+        (float playerHealth, float playerMaxHealth) = leftCharacterState.GetHealth();
+        uiController.GetPlayerHealthBar().SetHealth(playerHealth, playerMaxHealth);
+
+        (float enemyHealth, float enemyMaxHealth) = rightCharacterState.GetHealth();
+        uiController.GetEnemyHealthBar().SetHealth(enemyHealth, enemyMaxHealth);
     }
 
     private void InitializeLeftCharacter()

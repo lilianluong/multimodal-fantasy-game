@@ -23,10 +23,10 @@ public struct SpellEffect
     public SpellEffectType EffectType { get; }
     public int Magnitude { get; }
 
-    public SpellEffect(SpellEffectType effectType, int magnitude)
+    public SpellEffect(SpellEffectType effectType, float magnitude)
     {
         EffectType = effectType;
-        Magnitude = magnitude;
+        Magnitude = (int)magnitude;
     }
 
     public string LogString()
