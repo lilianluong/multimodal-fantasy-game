@@ -5,6 +5,7 @@ from shell.character.spell import Spell
 from shell.shell import PrintColors
 import sys
 import time
+import asyncio
 
 app = Flask(__name__)
 
@@ -73,7 +74,7 @@ def start_system():
     GlobalData.trigger_recognizer = TriggerRecognizer()
 
 
-def start_turn(turn_length: float):
+async def start_turn(turn_length: float):
     """
     Set the number of seconds a turn should take and starts a new turn
     When results are obtained, save them in global variables for the endpoints to return
