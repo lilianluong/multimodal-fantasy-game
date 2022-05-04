@@ -22,6 +22,8 @@ class GlobalData:
 
     # always set if it matches
     spokenCommand = ""  # one of "move tutor", "adventure" or a spell name
+    
+    triggers = ["move tutor", "adventure", "tutorial", "flame", "shield", "cure", "lightning", "leech", "hide"]
 
 
 @app.route("/")
@@ -45,7 +47,7 @@ def get_poll_turn():
         return jsonify(timeRemaining=max(time.time() - GlobalData.timeStartedAt, 0))
     else:
         return jsonify(
-            timeRemaining=0,
+            timeRemaining=-1,
             spellCast=GlobalData.spellCast,
             score=GlobalData.score,
             spokenCommand=GlobalData.spokenCommand,
@@ -91,7 +93,7 @@ def start_turn(turn_length: float):
     GlobalData.spellCast = result if result is not None else ""
     GlobalData.score = max(0, 1 - score) if score is not None else 0
 
-    for option in ("move tutor", "adventure"):
+    for option in GlobalData.triggers:
         if option in speech:
             GlobalData.spokenCommand = option
             break
