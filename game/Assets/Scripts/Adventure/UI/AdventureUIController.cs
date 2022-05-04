@@ -10,7 +10,7 @@ public class AdventureUIController : MonoBehaviour
     public GameObject notifierPrefab, colorFlarePrefab;
     public Transform leftNotificationContainer, rightNotificationContainer;
     public HealthBar playerHealthBar, enemyHealthBar;
-    public Text spellLogBody;
+    public Text spellLogBody, turnText;
     public Button spellTutorButton;
 
     // Start is called before the first frame update
@@ -33,7 +33,19 @@ public class AdventureUIController : MonoBehaviour
 
     public void UpdateTurnTimer(float timeRemaining)
     {
-        // TODO: Update the UI's turn timer
+        if (timeRemaining < 0)
+        {
+            turnText.text = "It's your turn!";
+            return;
+        }
+        int secsRemaining = Mathf.CeilToInt(timeRemaining);
+        if (secsRemaining == 1) turnText.text = $"It's your turn!\nCast a spell in {secsRemaining} second...";
+        else turnText.text = $"It's your turn!\nCast a spell in {secsRemaining} seconds...";
+    }
+
+    public void UpdateTurnToEnemy(string enemyName)
+    {
+        turnText.text = $"It's {enemyName}'s turn!";
     }
 
     public void CreateNotifier(string message, bool forPlayer)

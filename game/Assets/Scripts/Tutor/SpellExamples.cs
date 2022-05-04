@@ -6,7 +6,7 @@ public class SpellExamples
 {
     private static Dictionary<string, List<GestureFrame>> templates = new Dictionary<string, List<GestureFrame>>()
     {
-        { "circle", new List<GestureFrame>() {
+        { "shield", new List<GestureFrame>() {
             new GestureFrame(0, 0.23087374599732177f, 0.6280773051494786f, 0.03498915171836328f),
             new GestureFrame(9838, 0.24085763231724472f, 0.6274239841998765f, 0.034913638363167764f),
             new GestureFrame(19883, 0.2511484656218929f, 0.6265725035646832f, 0.03492604981585273f),
@@ -130,7 +130,7 @@ public class SpellExamples
             new GestureFrame(1200451, 0.20389206010272537f, 0.5762465248543382f, 0.005059087311741171f),
             new GestureFrame(1210125, 0.21567785950136187f, 0.5751200577432501f, 0.006006707324155638f)
         }},
-        { "horizontal_line", new List<GestureFrame>() {
+        { "attack", new List<GestureFrame>() {
             new GestureFrame(0, 0.0f, 0.0f, 0.0001024462889576093f),
             new GestureFrame(9360, 0.02475518077667451f, 0.0011324888742661027f, 6.0338735682349835e-05f),
             new GestureFrame(18963, 0.050916120261780475f, 0.0027574375080342494f, 0.0f),
@@ -170,7 +170,7 @@ public class SpellExamples
             new GestureFrame(339267, 0.9743784700183287f, 0.08018806686946557f, 0.08721410971701833f),
             new GestureFrame(348960, 1.0f, 0.08218000258462782f, 0.09383378442067171f)
         }},
-        { "ex", new List<GestureFrame>() {
+        { "heal", new List<GestureFrame>() {
             new GestureFrame(0, 0.0f, 0.4443588341517726f, 0.0f),
             new GestureFrame(9603, 0.005446281165334225f, 0.4373273867936138f, 0.0018237343218173447f),
             new GestureFrame(19149, 0.010711172331831338f, 0.4304250073054542f, 0.0025940142066281004f),
