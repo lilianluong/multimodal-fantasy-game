@@ -83,7 +83,7 @@ public class TutorUIController : MonoBehaviour
 
     public void UpdateSpellLog(string spellName, float score)
     {
-        int accuracy = Mathf.RoundToInt(score);
+        int accuracy = Mathf.RoundToInt(score * 100);
         spellLogBody.text = $"Spell Detected: {spellName}\nAccuracy: {accuracy}%";
     }
 

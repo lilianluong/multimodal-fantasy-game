@@ -102,7 +102,7 @@ public class AdventureUIController : MonoBehaviour
             return;
         }
         string spellName = spellcastInfo.Value.Name;
-        int accuracy = (int)spellcastInfo.Value.Score;
+        int accuracy = Mathf.RoundToInt(spellcastInfo.Value.Score * 100);
         SpellEffect spellEffect = spellcastInfo.Value.Effect;
         spellLogBody.text = $"Spell Detected: {spellName}\nAccuracy: {accuracy}%\n{spellEffect.LogString()}";
     }
