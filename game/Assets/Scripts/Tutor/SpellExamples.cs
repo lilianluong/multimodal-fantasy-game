@@ -566,7 +566,16 @@ public class SpellExamples
 
     public static List<string> GetExampleNames()
     {
-        return new List<string>(templates.Keys);
+        // Manual ordering
+        return new List<string>() {
+            "flame",
+            "cure",
+            "shield",
+            "lightning",
+            "leech",
+            "hide"
+        };
+        // return new List<string>(templates.Keys);
     }
 }
 

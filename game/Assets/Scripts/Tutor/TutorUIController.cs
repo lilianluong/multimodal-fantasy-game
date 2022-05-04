@@ -13,6 +13,7 @@ public class TutorUIController : MonoBehaviour
     public Text spellLogBody, turnText;
     public Button adventureButton, tutorialButton;
 
+    private List<string> spellNames;
     private Dictionary<string, Text> spellNameTexts;
     private string highlightedSpell;
 
@@ -23,10 +24,10 @@ public class TutorUIController : MonoBehaviour
         tutorialButton.onClick.AddListener(GoToTutorial);
         ResetSpellLog();
 
+        spellNames = SpellExamples.GetExampleNames();
         spellNameTexts = new Dictionary<string, Text>();
         int i = 0;
-        List<string> exampleNames = SpellExamples.GetExampleNames();
-        foreach (string name in exampleNames)
+        foreach (string name in spellNames)
         {
             GameObject textObject = Instantiate(spellNamePrefab, spellNameContainer);
             textObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -70f * i);
@@ -35,7 +36,7 @@ public class TutorUIController : MonoBehaviour
             textText.text = name.ToUpper();
             i++;
         }
-        highlightedSpell = exampleNames[0];
+        highlightedSpell = spellNames[0];
         HighlightSpell(highlightedSpell);
     }
 

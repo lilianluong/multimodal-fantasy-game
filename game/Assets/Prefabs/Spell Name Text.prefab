@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9096924990379620410}
   - component: {fileID: 1411898986195046639}
   - component: {fileID: 3638262821148633119}
+  - component: {fileID: 9055859330335331475}
   m_Layer: 5
   m_Name: Spell Name Text
   m_TagString: Untagged
@@ -79,3 +80,15 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: FLAME
+--- !u!114 &9055859330335331475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7302073513157286587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80b90e84982fd544a77057414d506b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
