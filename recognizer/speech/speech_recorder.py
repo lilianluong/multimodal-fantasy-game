@@ -7,7 +7,7 @@ from shell.shell import PrintColors
 def async_record_process(seconds, queue):
     mic = sr.Microphone()
     recognizer = sr.Recognizer()
-    PrintColors.print_paragraph_text("Your turn!")
+    # PrintColors.print_paragraph_text("Your turn!")
     # print("Recording")
     try:
         with mic as source:

@@ -30,7 +30,7 @@ class TriggerRecognizer:
                 speech_result = get_speech_result(*speech_process)
         else:
             # Hardcoded speech
-            speech_result = "attack"
+            speech_result = "flame"
             
         if verbose > 0: print("Speech result:", speech_result)
 
@@ -61,7 +61,7 @@ class TriggerRecognizer:
                         valid_speech_labels.add(label)
         else:
             # Replace with hardcoded speech labels
-            valid_speech_labels = {"attack"}
+            valid_speech_labels = {"flame"}
 
         # Process gesture
         gesture_result = recognize_gesture(gesture_frames, self._gesture_db)

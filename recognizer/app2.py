@@ -6,27 +6,25 @@ from shell.shell import PrintColors
 import sys
 import time
 import asyncio
-from multiprocessing import Process
+from multiprocessing import Process, Value
 
 app = Flask(__name__)
 
+SPOKEN_COMMANDS = ["move tutor", "adventure", "tutorial", "flame", "shield", "cure", "lightning", "leech", "hide"]
 
-class GlobalData:
-    trigger_recognizer = None
-    start_turn = False
 
-    timeStartedAt = time.time()
-    turnLength = 0
-    turnFinished = False
+GlobalSharedData = (
+    Value('i', 0),  # needToStartTurn
 
-    # set if a spell was cast
-    spellCast = ""
-    score = 1
+    Value('d', time.time()),  # timeStartedAt
+    Value('d', 2.5),  # turnLength
+    Value('i', 0),  # turnFinished
 
-    # always set if it matches
-    spokenCommand = ""  # one of "move tutor", "adventure" or a spell name
-    
-    triggers = ["move tutor", "adventure", "tutorial", "flame", "shield", "cure", "lightning", "leech", "hide"]
+    Value('i', -1),  # spellCast
+    Value('d', 0),  # score
+
+    Value('i', -1),  # spokenCommand
+)
 
 
 @app.route("/")
@@ -46,14 +44,18 @@ def get_poll_turn():
         ...
     }
     """
-    if not GlobalData.turnFinished:
-        return jsonify(timeRemaining=max(time.time() - GlobalData.timeStartedAt, 0))
+    if GlobalSharedData[3].value == 0:  # turnFinished is 0
+        current_time = time.time() - GlobalSharedData[1].value
+        print(current_time)
+        return jsonify(timeRemaining=max(GlobalSharedData[2].value - current_time, 0))
     else:
+        spell_cast_index = GlobalSharedData[4].value
+        spoken_command_index = GlobalSharedData[6].value
         return jsonify(
             timeRemaining=-1,
-            spellCast=GlobalData.spellCast,
-            score=GlobalData.score,
-            spokenCommand=GlobalData.spokenCommand,
+            spellCast="" if spell_cast_index == -1 else SPOKEN_COMMANDS[spell_cast_index],
+            score=GlobalSharedData[5].value,
+            spokenCommand="" if spoken_command_index == -1 else SPOKEN_COMMANDS[spoken_command_index],
         )
 
 
@@ -63,58 +65,53 @@ def post_start_turn():
     Handles POST input with a turnLength float parameter and starts a new turn.
     If a turn is already going, ignore its result and start a new one.
     """
-    # GlobalData.turnLength = request.form["turnLength"]
-    # TODO: run start_turn(turnLength) asynchronously and move to the return statement immediately
-    GlobalData.start_turn = True
+    # GlobalSharedData[2].value = float(request.form["turnLength"])  # turnLength
+    GlobalSharedData[0].value = 1  # needToStartTurn
     return "started turn"
 
 
-def start_system():
+def start_system(
+        needToStartTurn,
+        timeStartedAt,
+        turnLength,
+        turnFinished,
+        spellCast,
+        score,
+        spokenCommand
+        ):
     """
     Set up the backend recognition system
-    Start recording to handle non-turn voice commands
     """
-    # GlobalData.trigger_recognizer = TriggerRecognizer()
-    print("HI", flush=True)
+    trigger_recognizer = TriggerRecognizer(use_gesture=False, use_speech=False)
+    print("Starting system...")
     while True:
-        print(GlobalData.start_turn, flush=True)
+        if needToStartTurn.value == 1:
+            print(f"Start turn for {turnLength.value} seconds.")
+            t0 = time.time()
+            timeStartedAt.value = t0
+            turnFinished.value = 0
 
+            result, result_score, speech = trigger_recognizer.take_turn(num_seconds=turnLength.value, use_gesture=False, use_speech=False)
 
-def start_turn(turn_length: float):
-    """
-    Set the number of seconds a turn should take and starts a new turn
-    When results are obtained, save them in global variables for the endpoints to return
-    """
-    # start the turn
-    t0 = time.time()
-    GlobalData.timeStartedAt = t0
-    GlobalData.turnLength = turn_length
-    GlobalData.turnFinished = False
+            # TODO: how to handle interruptions? assume it won't happen?
 
-    result, score, speech = GlobalData.trigger_recognizer.take_turn(num_seconds=turn_length)
+            spellCast.value = SPOKEN_COMMANDS.index(result) if result is not None else -1
+            score.value = max(0.0, 1 - result_score) if result_score is not None else 0
 
-    if GlobalData.timeStartedAt != t0:
-        # if a different process interrupted this just skip the rest
-        return
-
-    GlobalData.spellCast = result if result is not None else ""
-    GlobalData.score = max(0, 1 - score) if score is not None else 0
-
-    for option in GlobalData.triggers:
-        if option in speech:
-            GlobalData.spokenCommand = option
-            break
-    GlobalData.turnFinished = True
+            spoken_command_index = -1
+            for i, option in enumerate(SPOKEN_COMMANDS):
+                if option in speech:
+                    spoken_command_index = i
+                    break
+            spokenCommand.value = spoken_command_index
+            turnFinished.value = 1
+            needToStartTurn.value = 0
 
 
 def do_things():
-    p1 = Process(target = start_system)
+    p1 = Process(target=start_system, args=GlobalSharedData)
     p1.start()
-    print("started process")
-    time.sleep(2)
-    GlobalData.start_turn = True
-
-    # app.run(debug=True)
+    app.run(debug=True)
 
 
 if __name__ == "__main__":
