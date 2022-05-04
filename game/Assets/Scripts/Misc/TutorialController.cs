@@ -8,7 +8,7 @@ public class TutorialController : MonoBehaviour
 {
     // References
     public Button adventureButton, spellTutorButton;
-    public Text turnText;
+    public Text turnText, titleText;
     private ServerManager serverManager;
 
     private TutorialState state;
@@ -20,6 +20,9 @@ public class TutorialController : MonoBehaviour
         serverManager = GetComponent<ServerManager>();
         adventureButton.onClick.AddListener(GoToAdventure);
         spellTutorButton.onClick.AddListener(GoToSpellTutor);
+
+        titleText.text = GlobalData.PlayerDied ? "YOU WERE KILLED" : "HOW TO PLAY";
+        GlobalData.PlayerDied = false;
 
         state = TutorialState.Waiting;
         animationState = 0;

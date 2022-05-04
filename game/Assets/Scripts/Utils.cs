@@ -26,7 +26,7 @@ public struct SpellEffect
     public SpellEffect(SpellEffectType effectType, float magnitude)
     {
         EffectType = effectType;
-        Magnitude = (int)magnitude;
+        Magnitude = Mathf.RoundToInt(magnitude);
     }
 
     public string LogString()

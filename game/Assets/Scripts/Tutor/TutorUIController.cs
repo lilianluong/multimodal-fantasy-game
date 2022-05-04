@@ -7,10 +7,14 @@ using UnityEngine.SceneManagement;
 public class TutorUIController : MonoBehaviour
 {
     // References
-    public GameObject colorFlarePrefab;  // notifierPrefab
+    public GameObject colorFlarePrefab, spellNamePrefab;  // notifierPrefab
+    public Transform spellNameContainer;
     // public Transform leftNotificationContainer, rightNotificationContainer;
     public Text spellLogBody, turnText;
     public Button adventureButton, tutorialButton;
+
+    private Dictionary<string, Text> spellNameTexts;
+    private string highlightedSpell;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +22,21 @@ public class TutorUIController : MonoBehaviour
         adventureButton.onClick.AddListener(GoToAdventure);
         tutorialButton.onClick.AddListener(GoToTutorial);
         ResetSpellLog();
+
+        spellNameTexts = new Dictionary<string, Text>();
+        int i = 0;
+        List<string> exampleNames = SpellExamples.GetExampleNames();
+        foreach (string name in exampleNames)
+        {
+            GameObject textObject = Instantiate(spellNamePrefab, spellNameContainer);
+            textObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -70f * i);
+            Text textText = textObject.GetComponent<Text>();
+            spellNameTexts[name] = textText;
+            textText.text = name.ToUpper();
+            i++;
+        }
+        highlightedSpell = exampleNames[0];
+        HighlightSpell(highlightedSpell);
     }
 
     // Update is called once per frame
@@ -33,7 +52,7 @@ public class TutorUIController : MonoBehaviour
 
     public void GoToTutorial()
     {
-        // SceneManager.LoadScene("Tutorial");
+        SceneManager.LoadScene("Tutorial");
     }
 
     public void UpdateTurnTimer(float timeRemaining)
@@ -63,12 +82,26 @@ public class TutorUIController : MonoBehaviour
 
     public void UpdateSpellLog(string spellName, float score)
     {
-        int accuracy = (int)score;
+        int accuracy = Mathf.RoundToInt(score);
         spellLogBody.text = $"Spell Detected: {spellName}\nAccuracy: {accuracy}%";
     }
 
     public void ResetSpellLog()
     {
         spellLogBody.text = "No spell was cast.";
+    }
+
+    public void HighlightSpell(string spellName)
+    {
+        if (spellNameTexts.ContainsKey(spellName))
+        {
+            Text highlightedText = spellNameTexts[highlightedSpell];
+            highlightedText.color = new Color(0.7f, 0.7f, 0.7f, 1f);
+            highlightedText.fontStyle = FontStyle.Normal;
+            highlightedSpell = spellName;
+            Text newHighlightText = spellNameTexts[spellName];
+            newHighlightText.color = new Color(1f, 1f, 1f, 1f);
+            newHighlightText.fontStyle = FontStyle.Bold;
+        }
     }
 }

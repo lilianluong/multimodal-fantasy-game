@@ -21,10 +21,10 @@ public class AdventureController : MonoBehaviour
     {
         serverManager = GetComponent<ServerManager>();
         InitializeLeftCharacter();
-        InitializeNewEncounter();
+        // InitializeNewEncounter();
 
-        state = AdventureState.Waiting;
-        animationState = 0;
+        state = AdventureState.MakingEnemy;
+        animationState = 6;
         Instance = this;
     }
 
@@ -32,6 +32,21 @@ public class AdventureController : MonoBehaviour
     void Update()
     {
         HandleEncounterLoop();
+    }
+
+    private void HandleKills()
+    {
+        if (leftCharacterState.IsDead())
+        {
+            // Player died
+            GlobalData.PlayerDied = true;
+            uiController.GoToTutorial();
+        }
+        else if (rightCharacterState.IsDead())
+        {
+            // Player killed the enemy
+            state = AdventureState.MakingEnemy;
+        }
     }
 
     private void HandleEncounterLoop()
@@ -92,7 +107,7 @@ public class AdventureController : MonoBehaviour
         else if (state == AdventureState.EnemyTurn)
         {
             // Enemy's turn! Take an action.
-            if (animationState == 2)
+            if (animationState == 3)
             {
                 state = AdventureState.Waiting;
                 animationState = 0;
@@ -100,6 +115,26 @@ public class AdventureController : MonoBehaviour
             }
             else if (animationState > 0) return;
             HandleEnemyTurn();
+        }
+        else if (state == AdventureState.MakingEnemy)
+        {
+            if (animationState == 3)
+            {
+                uiController.CreateNotifier($"{rightCharacter.Name} was killed", forPlayer: false);
+                uiController.HideEnemyImage();
+                animationState++;
+            }
+            else if (animationState == 6)
+            {
+                InitializeNewEncounter();
+                uiController.ShowEnemyImage(Resources.Load<Sprite>(rightCharacter.Name));
+                animationState++;
+            }
+            else if (animationState == 8)
+            {
+                state = AdventureState.Waiting;
+                animationState = 0;
+            }
         }
     }
 
@@ -123,13 +158,13 @@ public class AdventureController : MonoBehaviour
             // SPELLS IMPLEMENTED HERE
             case "flame":
                 float dealtDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
-                uiController.CreateNotifier($"{rightCharacter.Name} took {(int)dealtDamage} damage", forPlayer: false);
+                uiController.CreateNotifier($"{rightCharacter.Name} took {Mathf.RoundToInt(dealtDamage)} damage", forPlayer: false);
                 uiController.ColorFlare(1f, 0f, 0f);
                 uiController.UpdateSpellLog(new SpellcastInfo("FLAME", response.score, new SpellEffect(SpellEffectType.Damage, dealtDamage)));
                 break;
             case "cure":
                 float healedAmount = leftCharacterState.Heal(response.score * 30);
-                uiController.CreateNotifier($"You healed for {(int)healedAmount} HP", forPlayer: true);
+                uiController.CreateNotifier($"You healed for {Mathf.RoundToInt(healedAmount)} HP", forPlayer: true);
                 uiController.ColorFlare(0.2f, 1f, 0.2f);
                 uiController.UpdateSpellLog(new SpellcastInfo("CURE", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
                 break;
@@ -155,6 +190,8 @@ public class AdventureController : MonoBehaviour
         uiController.GetPlayerHealthBar().SetHealth(leftCharacterState.GetHealth().Item1);
         uiController.GetEnemyHealthBar().SetHealth(rightCharacterState.GetHealth().Item1);
         animationState++;
+
+        HandleKills();
     }
 
     private void HandleEnemyTurn()
@@ -167,13 +204,15 @@ public class AdventureController : MonoBehaviour
         {
             // Attack
             float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage);
-            uiController.CreateNotifier($"You took {(int)dealtDamage} damage", forPlayer: true);
+            uiController.CreateNotifier($"You took {Mathf.RoundToInt(dealtDamage)} damage", forPlayer: true);
         }
         // add extra cases if we want
 
         uiController.GetPlayerHealthBar().SetHealth(leftCharacterState.GetHealth().Item1);
         // uiController.GetEnemyHealthBar().SetHealth(rightCharacterState.GetHealth().Item1);
-        animationState = 1;
+        animationState = 2;
+
+        HandleKills();
     }
 
     private void InitializeNewEncounter()
@@ -190,6 +229,7 @@ public class AdventureController : MonoBehaviour
 
         (float enemyHealth, float enemyMaxHealth) = rightCharacterState.GetHealth();
         uiController.GetEnemyHealthBar().SetHealth(enemyHealth, enemyMaxHealth);
+        uiController.GetEnemyHealthBar().SetName(rightCharacter.Name);
     }
 
     private void InitializeLeftCharacter()
@@ -200,4 +240,4 @@ public class AdventureController : MonoBehaviour
 }
 
 
-public enum AdventureState { Waiting, PlayerTurn, EnemyTurn };
+public enum AdventureState { Waiting, PlayerTurn, EnemyTurn, MakingEnemy };
