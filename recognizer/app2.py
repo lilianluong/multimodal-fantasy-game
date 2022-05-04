@@ -81,7 +81,9 @@ def start_system(
     """
     Set up the backend recognition system
     """
-    trigger_recognizer = TriggerRecognizer(use_gesture=False, use_speech=False)
+    use_speech = False
+    use_gesture = True
+    trigger_recognizer = TriggerRecognizer(use_gesture=use_gesture, use_speech=use_speech)
     print("Starting system...")
     while True:
         if needToStartTurn.value == 1:
@@ -90,7 +92,8 @@ def start_system(
             timeStartedAt.value = t0
             turnFinished.value = 0
 
-            result, result_score, speech = trigger_recognizer.take_turn(num_seconds=turnLength.value, use_gesture=False, use_speech=False)
+            result, result_score, speech = trigger_recognizer.take_turn(num_seconds=turnLength.value,
+                                                                        use_gesture=use_gesture, use_speech=use_speech)
 
             # TODO: how to handle interruptions? assume it won't happen?
 

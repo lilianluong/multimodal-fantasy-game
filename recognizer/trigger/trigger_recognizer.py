@@ -31,12 +31,14 @@ class TriggerRecognizer:
         else:
             # Hardcoded speech
             speech_result = "flame"
+            t0 = time.time()
+            while time.time() - t0 < num_seconds:
+                self._gesture_recorder.update()
             
         if verbose > 0: print("Speech result:", speech_result)
 
         # Check if using gesture, record
         if use_gesture:
-            from recorders.gesture_recorder import GestureRecorder
             gesture_frames = self._gesture_recorder.get_frames()
             self._gesture_recorder.reset()
         else:
