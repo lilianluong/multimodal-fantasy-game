@@ -11,12 +11,13 @@ public class AdventureUIController : MonoBehaviour
     public Transform leftNotificationContainer, rightNotificationContainer;
     public HealthBar playerHealthBar, enemyHealthBar;
     public Text spellLogBody, turnText;
-    public Button spellTutorButton;
+    public Button spellTutorButton, tutorialButton;
 
     // Start is called before the first frame update
     void Start()
     {
         spellTutorButton.onClick.AddListener(GoToSpellTutor);
+        tutorialButton.onClick.AddListener(GoToTutorial);
         ResetSpellLog();
     }
 
@@ -28,7 +29,12 @@ public class AdventureUIController : MonoBehaviour
 
     public void GoToSpellTutor()
     {
-        SceneManager.LoadScene("SpellTutor");
+        SceneManager.LoadScene("Tutor");
+    }
+
+    public void GoToTutorial()
+    {
+        // SceneManager.LoadScene("Tutorial");
     }
 
     public void UpdateTurnTimer(float timeRemaining)

@@ -5,6 +5,7 @@ using UnityEngine;
 public class TutorAnimator : MonoBehaviour
 {
     public float scaleMultiplier = 1f;
+    public float xOffset = 0f, yOffset = 3f;
     private string currentSpell;
 
     private List<GestureFrame> exampleFrames;
@@ -49,7 +50,7 @@ public class TutorAnimator : MonoBehaviour
 
     private void MoveTo(GestureFrame frame)
     {
-        transform.position = new Vector3((frame.x - 0.5f) * scaleMultiplier, (frame.y - 0.5f) * scaleMultiplier, 0f);
+        transform.position = new Vector3(frame.x * scaleMultiplier + xOffset, frame.y * scaleMultiplier + yOffset, 0f);
     }
 
     public void SwitchToSpell(string spellName)

@@ -6,9 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: b5ad25361466b484692314b0f16fa1e6
+  - enabled: 1
+    path: Assets/Scenes/Tutor.unity
+    guid: c3227e0b07019d94895cd8d9c8c1d930
+  - enabled: 1
     path: Assets/Scenes/Adventure.unity
     guid: 76b7e111753ff8449a000f05d7b05af1
-  - enabled: 1
-    path: Assets/Scenes/SpellTutor.unity
-    guid: 1b4eb35965208fd44a480b6d2f4b4a06
   m_configObjects: {}

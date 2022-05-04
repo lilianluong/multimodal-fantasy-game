@@ -107,20 +107,31 @@ public class AdventureController : MonoBehaviour
     {
         Debug.Log("Player turn: " + response.ToString());
         uiController.UpdateTurnTimer(-1f);
+        if (response.spokenCommand == "spell tutor")
+        {
+            uiController.GoToSpellTutor();
+            return;
+        }
+        else if (response.spokenCommand == "tutorial")
+        {
+            uiController.GoToTutorial();
+            return;
+        }
+
         switch (response.spellCast)
         {
             // SPELLS IMPLEMENTED HERE
-            case "attack":
+            case "flame":
                 float dealtDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
                 uiController.CreateNotifier($"{rightCharacter.Name} took {(int)dealtDamage} damage", forPlayer: false);
                 uiController.ColorFlare(1f, 0f, 0f);
-                uiController.UpdateSpellLog(new SpellcastInfo("ATTACK", response.score, new SpellEffect(SpellEffectType.Damage, dealtDamage)));
+                uiController.UpdateSpellLog(new SpellcastInfo("FLAME", response.score, new SpellEffect(SpellEffectType.Damage, dealtDamage)));
                 break;
-            case "heal":
+            case "cure":
                 float healedAmount = leftCharacterState.Heal(response.score * 30);
                 uiController.CreateNotifier($"You healed for {(int)healedAmount} HP", forPlayer: true);
                 uiController.ColorFlare(0.2f, 1f, 0.2f);
-                uiController.UpdateSpellLog(new SpellcastInfo("HEAL", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
+                uiController.UpdateSpellLog(new SpellcastInfo("CURE", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
                 break;
             default:
                 animationState++;  // skip flare

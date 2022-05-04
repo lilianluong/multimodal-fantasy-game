@@ -36,6 +36,7 @@ public class ServerManager : MonoBehaviour
     {
         if (!waitingForRequest)
         {
+            Debug.Log("Making PollTurn request");
             waitingForRequest = true;
             StartCoroutine(GetRequest("http://127.0.0.1:5000/api/pollTurn", (UnityWebRequest req) =>
             {
@@ -52,9 +53,9 @@ public class ServerManager : MonoBehaviour
                         else
                         {
                             pollResponse.timeRemaining = -1f;
-                            pollResponse.spellCast = "heal";
+                            pollResponse.spellCast = "cure";
                             pollResponse.score = 0.8f;
-                            pollResponse.spokenCommand = "heal";
+                            pollResponse.spokenCommand = "cure";
                         }
                         Debug.Log($"Debug mode: {pollResponse.ToString()}");
                         PolledTurn = true;
@@ -95,7 +96,7 @@ public class ServerManager : MonoBehaviour
                 else
                 {
                     Debug.Log($"POST request returned: {req.downloadHandler.text}");
-                    StartedTurn = true;
+                    if (req.downloadHandler.text != "0") StartedTurn = true;
                 }
                 waitingForRequest = false;
             }));
