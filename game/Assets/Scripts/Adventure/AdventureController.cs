@@ -73,7 +73,7 @@ public class AdventureController : MonoBehaviour
                 {
                     PollTurnResponse response = serverManager.PollResponse;
                     serverManager.PolledTurn = false;
-                    if (response.timeRemaining > 0)
+                    if (response.timeRemaining >= 0)
                     {
                         // Turn is still going, let's update the timer and wait
                         uiController.UpdateTurnTimer(response.timeRemaining);
@@ -106,8 +106,10 @@ public class AdventureController : MonoBehaviour
     private void HandlePlayerTurn(PollTurnResponse response)
     {
         Debug.Log("Player turn: " + response.ToString());
+        uiController.UpdateTurnTimer(-1f);
         switch (response.spellCast)
         {
+            // SPELLS IMPLEMENTED HERE
             case "attack":
                 float dealtDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
                 uiController.CreateNotifier($"{rightCharacter.Name} took {(int)dealtDamage} damage", forPlayer: false);
@@ -121,16 +123,20 @@ public class AdventureController : MonoBehaviour
                 uiController.UpdateSpellLog(new SpellcastInfo("HEAL", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
                 break;
             default:
+                animationState++;  // skip flare
+                uiController.CreateNotifier("Your spell fizzled...", forPlayer: true);
+                uiController.ResetSpellLog();
                 break;
         }
         uiController.GetPlayerHealthBar().SetHealth(leftCharacterState.GetHealth().Item1);
         uiController.GetEnemyHealthBar().SetHealth(rightCharacterState.GetHealth().Item1);
-        animationState = 1;
+        animationState++;
     }
 
     private void HandleEnemyTurn()
     {
         Debug.Log("Enemy turn!");
+        uiController.UpdateTurnToEnemy(rightCharacter.Name);
         double randomNum = Random.value;
 
         if (randomNum <= 1f)  // note that Random.value is [0f, 1f] INCLUSIVE for some inane reason

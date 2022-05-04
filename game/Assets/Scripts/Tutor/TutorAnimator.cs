@@ -5,7 +5,7 @@ using UnityEngine;
 public class TutorAnimator : MonoBehaviour
 {
     public float scaleMultiplier = 1f;
-    public string exampleName;
+    private string currentSpell;
 
     private List<GestureFrame> exampleFrames;
     private int frameIndex;
@@ -14,12 +14,8 @@ public class TutorAnimator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        exampleFrames = SpellExamples.GetExample(exampleName);
-        frameIndex = 0;
-        animationTime = 0;
-        exampleTime = exampleFrames[exampleFrames.Count - 1].timestamp;
-        MoveTo(exampleFrames[0]);
-        GetComponent<TrailRenderer>().Clear();
+        currentSpell = SpellExamples.GetExampleNames()[0];
+        ResetAnimation();
     }
 
     // Update is called once per frame
@@ -41,8 +37,27 @@ public class TutorAnimator : MonoBehaviour
         MoveTo(exampleFrames[frameIndex]);
     }
 
+    private void ResetAnimation()
+    {
+        exampleFrames = SpellExamples.GetExample(currentSpell);
+        frameIndex = 0;
+        animationTime = 0;
+        exampleTime = exampleFrames[exampleFrames.Count - 1].timestamp;
+        MoveTo(exampleFrames[0]);
+        GetComponent<TrailRenderer>().Clear();
+    }
+
     private void MoveTo(GestureFrame frame)
     {
         transform.position = new Vector3((frame.x - 0.5f) * scaleMultiplier, (frame.y - 0.5f) * scaleMultiplier, 0f);
+    }
+
+    public void SwitchToSpell(string spellName)
+    {
+        if (SpellExamples.GetExampleNames().Contains(spellName))
+        {
+            currentSpell = spellName;
+            ResetAnimation();
+        }
     }
 }

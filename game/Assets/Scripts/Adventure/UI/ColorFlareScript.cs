@@ -26,7 +26,8 @@ public class ColorFlareScript : MonoBehaviour
         myImage.color = new Color(r, g, b, 1f - brightnessRatio);
         if (timeElapsed > halfTime * 2)
         {
-            AdventureController.Instance.animationState++;
+            if (AdventureController.Instance != null) AdventureController.Instance.animationState++;
+            if (TutorController.Instance != null) TutorController.Instance.animationState++;
             Destroy(gameObject);
         }
     }

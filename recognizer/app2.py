@@ -6,6 +6,7 @@ from shell.shell import PrintColors
 import sys
 import time
 import asyncio
+from multiprocessing import Process
 
 app = Flask(__name__)
 
@@ -56,13 +57,13 @@ def get_poll_turn():
         )
 
 
-@app.route("/api/startTurn", methods=["POST"])
+@app.route("/api/startTurn", methods=["GET"])
 def post_start_turn():
     """
     Handles POST input with a turnLength float parameter and starts a new turn.
     If a turn is already going, ignore its result and start a new one.
     """
-    turnLength = request.form["turnLength"]
+    # GlobalData.turnLength = request.form["turnLength"]
     # TODO: run start_turn(turnLength) asynchronously and move to the return statement immediately
     GlobalData.start_turn = True
     return "started turn"
@@ -73,16 +74,10 @@ async def start_system():
     Set up the backend recognition system
     Start recording to handle non-turn voice commands
     """
-    # GlobalData.trigger_recognizer = TriggerRecognizer(use_gesture = False)
-    print("hello!", flush=True)
-    i = 0
+    # GlobalData.trigger_recognizer = TriggerRecognizer()
+    print("HI", flush=True)
     while True:
-        if GlobalData.start_turn:
-            start_turn()
-            GlobalData.start_turn = False
-        if i < 4:
-            print(i)
-            i += 1
+        print(GlobalData.start_turn, flush=True)
 
 
 def start_turn(turn_length: float):
@@ -123,6 +118,15 @@ async def main():
     # app.run(debug=True)
 
 
+def main():
+    p1 = Process(target = start_system)
+    p1.start()
+    print("started process")
+    time.sleep(2)
+    GlobalData.start_turn = True
+
+    # app.run(debug=True)
+
+
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    main()

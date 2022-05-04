@@ -45,15 +45,16 @@ public class ServerManager : MonoBehaviour
                     {
                         float rand = UnityEngine.Random.value;
                         pollResponse = new PollTurnResponse();
-                        if (rand > 0.2f)
+                        if (rand > 0.4f)
                         {
                             pollResponse.timeRemaining = 2f;
                         }
                         else
                         {
-                            pollResponse.timeRemaining = 0;
-                            pollResponse.spellCast = "attack";
+                            pollResponse.timeRemaining = -1f;
+                            pollResponse.spellCast = "heal";
                             pollResponse.score = 0.8f;
+                            pollResponse.spokenCommand = "heal";
                         }
                         Debug.Log($"Debug mode: {pollResponse.ToString()}");
                         PolledTurn = true;
