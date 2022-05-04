@@ -8,8 +8,9 @@ async def start_turn():
 
 
 async def post_post_start_turn():
-    asyncio.create_task(start_turn())  # fire and forget async_foo()
+    asyncio.create_task(start_turn())
 
+    await asyncio.sleep(1)
     print('Do some actions 1')
     await asyncio.sleep(1)
     print('Do some actions 2')

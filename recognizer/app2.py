@@ -1,11 +1,7 @@
 from flask import Flask, jsonify, request
 from trigger.trigger_recognizer import TriggerRecognizer
-from shell.character.character import Character
-from shell.character.spell import Spell
-from shell.shell import PrintColors
 import sys
 import time
-import asyncio
 from multiprocessing import Process, Value
 
 app = Flask(__name__)
@@ -59,13 +55,13 @@ def get_poll_turn():
         )
 
 
-@app.route("/api/startTurn", methods=["GET"])
+@app.route("/api/startTurn", methods=["POST"])
 def post_start_turn():
     """
     Handles POST input with a turnLength float parameter and starts a new turn.
     If a turn is already going, ignore its result and start a new one.
     """
-    # GlobalSharedData[2].value = float(request.form["turnLength"])  # turnLength
+    GlobalSharedData[2].value = float(request.form["turnLength"])  # turnLength
     GlobalSharedData[0].value = 1  # needToStartTurn
     return "started turn"
 
@@ -108,11 +104,11 @@ def start_system(
             needToStartTurn.value = 0
 
 
-def do_things():
+def main():
     p1 = Process(target=start_system, args=GlobalSharedData)
     p1.start()
     app.run(debug=True)
 
 
 if __name__ == "__main__":
-    do_things()
+    main()
