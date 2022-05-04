@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 class GlobalData:
     trigger_recognizer = None
+    start_turn = False
 
     timeStartedAt = time.time()
     turnLength = 0
@@ -63,6 +64,7 @@ def post_start_turn():
     """
     turnLength = request.form["turnLength"]
     # TODO: run start_turn(turnLength) asynchronously and move to the return statement immediately
+    GlobalData.start_turn = True
     return "started turn"
 
 
@@ -72,9 +74,12 @@ def start_system():
     Start recording to handle non-turn voice commands
     """
     GlobalData.trigger_recognizer = TriggerRecognizer()
+    while True:
+        if GlobalData.start_turn:
+            start_turn()
+            GlobalData.start_turn = False
 
-
-async def start_turn(turn_length: float):
+def start_turn(turn_length: float):
     """
     Set the number of seconds a turn should take and starts a new turn
     When results are obtained, save them in global variables for the endpoints to return
