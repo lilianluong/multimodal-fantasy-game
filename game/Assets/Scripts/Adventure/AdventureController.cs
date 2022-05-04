@@ -168,6 +168,19 @@ public class AdventureController : MonoBehaviour
                 uiController.ColorFlare(0.2f, 1f, 0.2f);
                 uiController.UpdateSpellLog(new SpellcastInfo("CURE", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
                 break;
+            case "lightning":
+                float dealtDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
+                uiController.CreateNotifier($"{rightCharacter.Name} took {(int)dealtDamage} damage", forPlayer: false);
+                uiController.ColorFlare(1f, 1f, 0.5f);
+                uiController.UpdateSpellLog(new SpellcastInfo("LIGHTNING", response.score, new SpellEffect(SpellEffectType.Damage, dealtDamage)));
+                break;
+            case "leech":
+                float dealtDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
+                float healedAmount = leftCharacterState.Heal(response.score * 30);
+                uiController.CreateNotifier($"You leeched {(int)healedAmount} HP", forPlayer: true);
+                uiController.ColorFlare(0.7f, 0.7f, 0.4f);
+                uiController.UpdateSpellLog(new SpellcastInfo("LEECH", response.score, new SpellEffect(SpellEffectType.Heal, healedAmount)));
+                break;
             default:
                 animationState++;  // skip flare
                 uiController.CreateNotifier("Your spell fizzled...", forPlayer: true);

@@ -110,13 +110,21 @@ public class TutorController : MonoBehaviour
         switch (response.spellCast)
         {
             // SPELLS IMPLEMENTED HERE
-            case "attack":
+            case "flame":
                 uiController.ColorFlare(1f, 0f, 0f);
-                uiController.UpdateSpellLog("ATTACK", response.score);
+                uiController.UpdateSpellLog("FLAME", response.score);
                 break;
-            case "heal":
+            case "cure":
                 uiController.ColorFlare(0.2f, 1f, 0.2f);
-                uiController.UpdateSpellLog("HEAL", response.score);
+                uiController.UpdateSpellLog("CURE", response.score);
+                break;
+            case "lightning":
+                uiController.ColorFlare(1f, 1f, 0.5f);
+                uiController.UpdateSpellLog("LIGHTNING", response.score);
+                break;
+            case "leech":
+                uiController.ColorFlare(0.7f, 0.7f, 0.4f);
+                uiController.UpdateSpellLog("LEECH", response.score);
                 break;
             default:
                 animationState++;  // skip flare
