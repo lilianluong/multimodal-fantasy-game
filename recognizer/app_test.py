@@ -60,12 +60,32 @@ def post_start_turn():
     Handles POST input with a turnLength float parameter and starts a new turn.
     If a turn is already going, return 0 else return 1
     """
+    turn_length = float(request.form["turnLength"])
     if GlobalSharedData[0].value == 1:
         # already going
         return "0"
-    GlobalSharedData[2].value = float(request.form["turnLength"])  # turnLength
+    GlobalSharedData[2].value = turn_length  # turnLength
     GlobalSharedData[0].value = 1  # needToStartTurn
     return "1"
+
+
+@app.route("/api/putInInput", methods=["GET"])
+def get_test_input():
+    result = request.args["spellCast"]
+    result_score = float(request.args["score"])
+    speech = request.args["speech"]
+
+    GlobalSharedData[4].value = SPOKEN_COMMANDS.index(result) if result is not None and result != "" else -1
+    GlobalSharedData[5].value = max(0.0, 1 - result_score) if result_score is not None else 0
+
+    spoken_command_index = -1
+    for i, option in enumerate(SPOKEN_COMMANDS):
+        if option in speech:
+            spoken_command_index = i
+            break
+    GlobalSharedData[6].value = spoken_command_index
+    GlobalSharedData[3].value = 1
+    return f"{result}, {result_score}, {speech}"
 
 
 def start_system(
@@ -80,7 +100,6 @@ def start_system(
     """
     Set up the backend recognition system
     """
-    trigger_recognizer = TriggerRecognizer(use_gesture=False, use_speech=False)
     print("Starting system...")
     while True:
         if needToStartTurn.value == 1:
@@ -89,20 +108,10 @@ def start_system(
             timeStartedAt.value = t0
             turnFinished.value = 0
 
-            result, result_score, speech = trigger_recognizer.take_turn(num_seconds=turnLength.value, use_gesture=False, use_speech=False)
-
+            while turnFinished.value == 0:
+                time.sleep(0.02)
             # TODO: how to handle interruptions? assume it won't happen?
 
-            spellCast.value = SPOKEN_COMMANDS.index(result) if result is not None else -1
-            score.value = max(0.0, 1 - result_score) if result_score is not None else 0
-
-            spoken_command_index = -1
-            for i, option in enumerate(SPOKEN_COMMANDS):
-                if option in speech:
-                    spoken_command_index = i
-                    break
-            spokenCommand.value = spoken_command_index
-            turnFinished.value = 1
             needToStartTurn.value = 0
 
 
