@@ -77,7 +77,7 @@ def start_system():
     # GlobalData.trigger_recognizer = TriggerRecognizer()
     print("HI", flush=True)
     while True:
-        print(GlobalData.needToStartTurn, flush=True)
+        print(GlobalData.start_turn, flush=True)
 
 
 def start_turn(turn_length: float):
