@@ -68,16 +68,22 @@ def post_start_turn():
     return "started turn"
 
 
-def start_system():
+async def start_system():
     """
     Set up the backend recognition system
     Start recording to handle non-turn voice commands
     """
-    GlobalData.trigger_recognizer = TriggerRecognizer()
+    # GlobalData.trigger_recognizer = TriggerRecognizer(use_gesture = False)
+    print("hello!", flush=True)
+    i = 0
     while True:
         if GlobalData.start_turn:
             start_turn()
             GlobalData.start_turn = False
+        if i < 4:
+            print(i)
+            i += 1
+
 
 def start_turn(turn_length: float):
     """
@@ -105,7 +111,18 @@ def start_turn(turn_length: float):
             break
     GlobalData.turnFinished = True
 
+async def main():
+    asyncio.create_task(start_system())
+    # loop = asyncio.get_event_loop()
+    # loop.run_until_complete(start_system())
+    print("hmmm")
+    await asyncio.sleep(1)
+    print("hmmm")
+    await asyncio.sleep(1)
+    print("hmmm")
+    # app.run(debug=True)
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
-    start_system()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
