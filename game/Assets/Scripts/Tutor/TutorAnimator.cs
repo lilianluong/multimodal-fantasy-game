@@ -5,7 +5,7 @@ using UnityEngine;
 public class TutorAnimator : MonoBehaviour
 {
     public float scaleMultiplier = 1f;
-    public float xOffset = 0f, yOffset = 3f;
+    public float xOffset = 0f, yOffset = 3f, pauseTime = 0.5f;
     private string currentSpell;
 
     private List<GestureFrame> exampleFrames;
@@ -23,7 +23,7 @@ public class TutorAnimator : MonoBehaviour
     void Update()
     {
         animationTime += Time.deltaTime * 1e6;
-        if (animationTime >= exampleTime)
+        if (animationTime >= exampleTime + pauseTime * 1e6)
         {
             animationTime = 0;
             frameIndex = 0;
@@ -31,6 +31,7 @@ public class TutorAnimator : MonoBehaviour
             GetComponent<TrailRenderer>().Clear();
             return;
         }
+        if (animationTime >= exampleTime) return;
         while (animationTime > exampleFrames[frameIndex].timestamp)
         {
             frameIndex++;
@@ -59,6 +60,7 @@ public class TutorAnimator : MonoBehaviour
         {
             currentSpell = spellName;
             ResetAnimation();
+            TutorController.Instance.uiController.HighlightSpell(spellName);
         }
     }
 }

@@ -12,19 +12,35 @@ public class AdventureUIController : MonoBehaviour
     public HealthBar playerHealthBar, enemyHealthBar;
     public Text spellLogBody, turnText;
     public Button spellTutorButton, tutorialButton;
+    public Image enemyImage;
+
+    private float enemyImageOpacity, targetEnemyImageOpacity;
 
     // Start is called before the first frame update
     void Start()
     {
+        enemyImageOpacity = 0f;
+        targetEnemyImageOpacity = 0f;
         spellTutorButton.onClick.AddListener(GoToSpellTutor);
         tutorialButton.onClick.AddListener(GoToTutorial);
         ResetSpellLog();
+        GetPlayerHealthBar().SetHealth(100f, 100f);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (enemyImageOpacity != targetEnemyImageOpacity)
+        {
+            float deltaOpacity = (enemyImageOpacity < targetEnemyImageOpacity) ? Time.deltaTime : -Time.deltaTime;
+            if (Mathf.Abs(deltaOpacity) >= Mathf.Abs(enemyImageOpacity - targetEnemyImageOpacity))
+            {
+                enemyImageOpacity = targetEnemyImageOpacity;
+                AdventureController.Instance.animationState++;
+            }
+            else enemyImageOpacity += deltaOpacity;
+            enemyImage.color = new Color(1f, 1f, 1f, enemyImageOpacity);
+        }
     }
 
     public void GoToSpellTutor()
@@ -34,7 +50,7 @@ public class AdventureUIController : MonoBehaviour
 
     public void GoToTutorial()
     {
-        // SceneManager.LoadScene("Tutorial");
+        SceneManager.LoadScene("Tutorial");
     }
 
     public void UpdateTurnTimer(float timeRemaining)
@@ -67,6 +83,16 @@ public class AdventureUIController : MonoBehaviour
         flare.GetComponent<ColorFlareScript>().SetColor(r, g, b);
     }
 
+    public void HideEnemyImage()
+    {
+        targetEnemyImageOpacity = 0f;
+    }
+
+    public void ShowEnemyImage(Sprite enemySprite)
+    {
+        enemyImage.sprite = enemySprite;
+        targetEnemyImageOpacity = 1f;
+    }
 
     public void UpdateSpellLog(SpellcastInfo? spellcastInfo)
     {

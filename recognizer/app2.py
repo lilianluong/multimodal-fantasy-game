@@ -60,10 +60,11 @@ def post_start_turn():
     Handles POST input with a turnLength float parameter and starts a new turn.
     If a turn is already going, return 0 else return 1
     """
+    turn_length = float(request.form["turnLength"])
     if GlobalSharedData[0].value == 1:
         # already going
         return "0"
-    GlobalSharedData[2].value = float(request.form["turnLength"])  # turnLength
+    GlobalSharedData[2].value = turn_length  # turnLength
     GlobalSharedData[0].value = 1  # needToStartTurn
     return "1"
 

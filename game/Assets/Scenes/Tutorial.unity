@@ -359,7 +359,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.34311587, g: 0.33828765, b: 0.3962264, a: 0}
+  m_BackGroundColor: {r: 0.1695443, g: 0.15040937, b: 0.18867922, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -856,6 +856,7 @@ MonoBehaviour:
   adventureButton: {fileID: 154879364}
   spellTutorButton: {fileID: 616279368}
   turnText: {fileID: 1737455944}
+  titleText: {fileID: 451450269}
 --- !u!4 &1699597437
 Transform:
   m_ObjectHideFlags: 0
