@@ -223,7 +223,7 @@ public class AdventureController : MonoBehaviour
     private void InitializeNewEncounter()
     {
         // Choose an enemy
-        rightCharacter = new Werewolf();  // Replace with a random enemy (instance of Character)
+        rightCharacter = EnemyManager.GetRandomEnemy();
         // Initialize CharacterState
         leftCharacterState = new CharacterState(leftCharacter);
         rightCharacterState = new CharacterState(rightCharacter);

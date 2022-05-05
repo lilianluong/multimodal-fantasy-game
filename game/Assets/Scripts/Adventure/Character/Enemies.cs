@@ -1,5 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
+
+public class EnemyManager
+{
+    public static string lastEnemy = "Minotaur";
+    public static Character GetRandomEnemy()
+    {
+        Character enemy;
+        do
+        {
+            float rand = Random.value;
+            if (rand < 0.45f) enemy = new Werewolf();
+            else if (rand < 0.7f) enemy = new Orc();
+            else if (rand < 0.95f) enemy = new Goblin();
+            else enemy = new Minotaur();
+        } while (enemy.Name == lastEnemy);
+        lastEnemy = enemy.Name;
+        return enemy;
+    }
+}
+
 
 public class Werewolf : Character
 {
