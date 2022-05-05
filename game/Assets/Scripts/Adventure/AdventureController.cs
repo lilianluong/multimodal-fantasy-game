@@ -162,26 +162,26 @@ public class AdventureController : MonoBehaviour
         {
             // SPELLS IMPLEMENTED HERE
             case "flame":
-                float flameDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
+                float flameDamage = rightCharacterState.TakeDamage((response.score + 0.05f) * leftCharacter.AttackDamage);
                 uiController.CreateNotifier($"{rightCharacter.Name} took {Mathf.RoundToInt(flameDamage)} damage", forPlayer: false);
                 uiController.ColorFlare(1f, 0f, 0f);
                 uiController.UpdateSpellLog(new SpellcastInfo("FLAME", response.score, new SpellEffect(SpellEffectType.Damage, flameDamage)));
                 break;
             case "cure":
-                float curedHeal = leftCharacterState.Heal(response.score * 30);
+                float curedHeal = leftCharacterState.Heal(response.score * 25);
                 uiController.CreateNotifier($"You healed for {Mathf.RoundToInt(curedHeal)} HP", forPlayer: true);
                 uiController.ColorFlare(0.2f, 1f, 0.2f);
                 uiController.UpdateSpellLog(new SpellcastInfo("CURE", response.score, new SpellEffect(SpellEffectType.Heal, curedHeal)));
                 break;
             case "lightning":
-                float lightningDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
+                float lightningDamage = rightCharacterState.TakeDamage(response.score * (leftCharacter.AttackDamage + (6 * Random.value - 3)));
                 uiController.CreateNotifier($"{rightCharacter.Name} took {Mathf.RoundToInt(lightningDamage)} damage", forPlayer: false);
                 uiController.ColorFlare(1f, 1f, 0.5f);
                 uiController.UpdateSpellLog(new SpellcastInfo("LIGHTNING", response.score, new SpellEffect(SpellEffectType.Damage, lightningDamage)));
                 break;
             case "leech":
                 float leechedDamage = rightCharacterState.TakeDamage(response.score * leftCharacter.AttackDamage);
-                float leechedHeal = leftCharacterState.Heal(response.score * 30);
+                float leechedHeal = leftCharacterState.Heal(leechedDamage);
                 uiController.CreateNotifier($"You leeched {Mathf.RoundToInt(leechedHeal)} HP", forPlayer: true);
                 uiController.ColorFlare(0.7f, 0.7f, 0.4f);
                 uiController.UpdateSpellLog(new SpellcastInfo("LEECH", response.score, new SpellEffect(SpellEffectType.Heal, leechedHeal)));
