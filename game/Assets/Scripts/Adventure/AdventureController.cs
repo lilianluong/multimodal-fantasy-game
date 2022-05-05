@@ -208,7 +208,7 @@ public class AdventureController : MonoBehaviour
         if (randomNum <= 0.8f)  // note that Random.value is [0f, 1f] INCLUSIVE for some inane reason
         {
             // Attack
-            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage * Random.value);
+            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage * (1f + Random.value * 0.5));
             uiController.CreateNotifier($"You took {Mathf.RoundToInt(dealtDamage)} damage", forPlayer: true);
         } else {
             // Heal
