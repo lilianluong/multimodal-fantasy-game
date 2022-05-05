@@ -24,6 +24,8 @@ public class TutorUIController : MonoBehaviour
         tutorialButton.onClick.AddListener(GoToTutorial);
         ResetSpellLog();
 
+        turnText.text = "";
+
         spellNames = SpellExamples.GetExampleNames();
         spellNameTexts = new Dictionary<string, Text>();
         int i = 0;

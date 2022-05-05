@@ -24,6 +24,8 @@ public class TutorialController : MonoBehaviour
         titleText.text = GlobalData.PlayerDied ? "YOU WERE KILLED" : "HOW TO PLAY";
         GlobalData.PlayerDied = false;
 
+        turnText.text = "";
+
         state = TutorialState.Waiting;
         animationState = 0;
     }

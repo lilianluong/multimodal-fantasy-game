@@ -24,6 +24,7 @@ public class AdventureUIController : MonoBehaviour
         spellTutorButton.onClick.AddListener(GoToSpellTutor);
         tutorialButton.onClick.AddListener(GoToTutorial);
         ResetSpellLog();
+        turnText.text = "";
         GetPlayerHealthBar().SetHealth(100f, 100f);
     }
 
