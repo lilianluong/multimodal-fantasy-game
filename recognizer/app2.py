@@ -3,8 +3,12 @@ from trigger.trigger_recognizer import TriggerRecognizer
 import sys
 import time
 from multiprocessing import Process, Value
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
+
 
 SPOKEN_COMMANDS = ["spell tutor", "adventure", "tutorial", "flame", "shield", "cure", "lightning", "leech", "hide"]
 
@@ -14,12 +18,18 @@ GlobalSharedData = (
 
     Value('d', time.time()),  # timeStartedAt
     Value('d', 2.5),  # turnLength
-    Value('i', 0),  # turnFinished
+    Value('i', -1),  # turnFinished
 
     Value('i', -1),  # spellCast
     Value('d', 0),  # score
 
     Value('i', -1),  # spokenCommand
+)
+
+SpeechProcessArgs = (
+    GlobalSharedData[1],
+    GlobalSharedData[2],
+    GlobalSharedData[3],
 )
 
 
@@ -43,7 +53,7 @@ def get_poll_turn():
     """
     if GlobalSharedData[3].value == 0:  # turnFinished is 0
         return jsonify(turnState=0)
-    elif GlobalSharedData[3].value == 1:  # turnFinished is 1
+    elif GlobalSharedData[3].value < 3:  # turnFinished is 1 or 2
         current_time = time.time() - GlobalSharedData[1].value
         return jsonify(timeRemaining=max(GlobalSharedData[2].value - current_time, 0), turnState=1)
     else:
@@ -96,7 +106,8 @@ def start_system(
 
             result, result_score, speech = trigger_recognizer.take_turn(num_seconds=turnLength.value,
                                                                         use_gesture=use_gesture, use_speech=use_speech,
-                                                                        global_args=(timeStartedAt, turnFinished))
+                                                                        timeStartedAt=timeStartedAt,
+                                                                        turnFinished=turnFinished)
 
             # TODO: how to handle interruptions? assume it won't happen?
 
@@ -108,8 +119,10 @@ def start_system(
                 if option in speech:
                     spoken_command_index = i
                     break
+            if "spell cuter" in speech:
+                spoken_command_index = 0
             spokenCommand.value = spoken_command_index
-            turnFinished.value = 2
+            turnFinished.value = 3
             needToStartTurn.value = 0
 
 

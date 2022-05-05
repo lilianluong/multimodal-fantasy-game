@@ -5,8 +5,9 @@ import config
 from gesture.gesture_recognizer import recognize_gesture
 from gesture.hardcoded_gestures import hardcoded_gestures
 from gesture.gesture_types import GestureDatabase
-from speech.speech_recorder import start_speech_process, get_speech_result
+from speech.speech_recorder import start_speech_process, start_speech_process_loop, get_speech_result
 from trigger.trigger_database import TriggerDatabase
+from multiprocessing import Value
 
 
 class TriggerRecognizer:
@@ -16,32 +17,52 @@ class TriggerRecognizer:
         if use_gesture:
             from recorders.gesture_recorder import GestureRecorder
             self._gesture_recorder = GestureRecorder()
+        if use_speech:
+            self._speech_process_args = (
+                Value('d', time.time()),  # timeStartedAt
+                Value('d', 2.5),  # turnLength
+                Value('i', -1),  # turnFinished
+            )
+            self._speech_process, self._speech_queue = start_speech_process_loop(self._speech_process_args)
 
     def take_turn(self, num_seconds=config.TURN_SECONDS, use_gesture = True, use_speech = True,
-                  global_args=None,
+                  timeStartedAt = None, turnFinished = None,
                   verbose = 1) -> Tuple[Union[str, float, None], ...]:
         # Check if using speech, record
         if use_speech:
             # Record speech and gesture
-            speech_process = start_speech_process(num_seconds,
-                                                  global_args=global_args if global_args is not None else tuple())
-            speech_result = False
-            while speech_result is False:
-                for _ in range(config.LEAP_AUDIO_RECORD_RATIO):
-                    if use_gesture: self._gesture_recorder.update()
-                    else: continue
-                speech_result = get_speech_result(*speech_process)
+            # speech_process = start_speech_process(num_seconds,
+            #                                       global_args=global_args if global_args is not None else (None, None))
+            # speech_result = False
+            # while speech_result is False:
+            #     for _ in range(config.LEAP_AUDIO_RECORD_RATIO):
+            #         if use_gesture: self._gesture_recorder.update()
+            #         else: continue
+            #     speech_result = get_speech_result(*speech_process)
+            speechTimeStartedAt, turnLength, speechTurnFinished = self._speech_process_args
+            turnLength.value = num_seconds
+            speechTurnFinished.value = 0
+            while speechTurnFinished.value < 1:
+                pass
+            print("Recording started for", num_seconds, "seconds")
+            timeStartedAt.value = speechTimeStartedAt.value
+            turnFinished.value = 1
+            while speechTurnFinished.value < 2:
+                if use_gesture:
+                    self._gesture_recorder.update()
+            speech_result = self._speech_queue.get()
+            turnFinished.value = 2
         else:
             # Hardcoded speech
             speech_result = "flame"
             t0 = time.time()
-            if global_args is not None:
-                global_args[0].value = t0
-                global_args[1].value = 1
+            # if global_args is not None:
+            #     global_args[0].value = t0
+            #     global_args[1].value = 1
             while time.time() - t0 < num_seconds:
                 self._gesture_recorder.update()
-            
-        if verbose > 0: print("Speech result:", speech_result)
+
+        if verbose > 0: print("Speech result:", None if speech_result is None else str(speech_result).lower())
 
         # Check if using gesture, record
         if use_gesture:
@@ -57,7 +78,7 @@ class TriggerRecognizer:
             return None, None, str(speech_result).lower()
         if speech_result is None:
             if verbose > 0: print("No audio detected")
-            return None, None, None
+            return None, None, ""
 
         # Process speech
         if use_speech:
