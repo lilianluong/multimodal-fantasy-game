@@ -35,19 +35,23 @@ def get_poll_turn():
     :return: necessary turn information as a JSON following the format below:
     {
         timeRemaining: [float, None],  // return None when turn has ended
+        turnState: int,  // 0 for waiting, 1 for started recording, 2 for done
         spellCast: [string, None],  // return None if no spell was returned
         score: [float, None],
         ...
     }
     """
     if GlobalSharedData[3].value == 0:  # turnFinished is 0
+        return jsonify(turnState=0)
+    elif GlobalSharedData[3].value == 1:  # turnFinished is 1
         current_time = time.time() - GlobalSharedData[1].value
-        return jsonify(timeRemaining=max(GlobalSharedData[2].value - current_time, 0))
+        return jsonify(timeRemaining=max(GlobalSharedData[2].value - current_time, 0), turnState=1)
     else:
         spell_cast_index = GlobalSharedData[4].value
         spoken_command_index = GlobalSharedData[6].value
         return jsonify(
             timeRemaining=-1,
+            turnState=2,
             spellCast="" if spell_cast_index == -1 else SPOKEN_COMMANDS[spell_cast_index],
             score=GlobalSharedData[5].value,
             spokenCommand="" if spoken_command_index == -1 else SPOKEN_COMMANDS[spoken_command_index],
@@ -81,19 +85,18 @@ def start_system(
     """
     Set up the backend recognition system
     """
-    use_speech = False
+    use_speech = True
     use_gesture = True
     trigger_recognizer = TriggerRecognizer(use_gesture=use_gesture, use_speech=use_speech)
     print("Starting system...")
     while True:
         if needToStartTurn.value == 1:
             print(f"Start turn for {turnLength.value} seconds.")
-            t0 = time.time()
-            timeStartedAt.value = t0
             turnFinished.value = 0
 
             result, result_score, speech = trigger_recognizer.take_turn(num_seconds=turnLength.value,
-                                                                        use_gesture=use_gesture, use_speech=use_speech)
+                                                                        use_gesture=use_gesture, use_speech=use_speech,
+                                                                        global_args=(timeStartedAt, turnFinished))
 
             # TODO: how to handle interruptions? assume it won't happen?
 
@@ -106,7 +109,7 @@ def start_system(
                     spoken_command_index = i
                     break
             spokenCommand.value = spoken_command_index
-            turnFinished.value = 1
+            turnFinished.value = 2
             needToStartTurn.value = 0
 
 

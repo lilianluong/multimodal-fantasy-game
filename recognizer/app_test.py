@@ -14,7 +14,7 @@ GlobalSharedData = (
 
     Value('d', time.time()),  # timeStartedAt
     Value('d', 2.5),  # turnLength
-    Value('i', 0),  # turnFinished
+    Value('i', 1),  # turnFinished
 
     Value('i', -1),  # spellCast
     Value('d', 0),  # score
@@ -40,14 +40,15 @@ def get_poll_turn():
         ...
     }
     """
-    if GlobalSharedData[3].value == 0:  # turnFinished is 0
+    if GlobalSharedData[3].value == 1:  # turnFinished is 0
         current_time = time.time() - GlobalSharedData[1].value
-        return jsonify(timeRemaining=max(GlobalSharedData[2].value - current_time, 0))
+        return jsonify(timeRemaining=max(GlobalSharedData[2].value - current_time, 0), turnState=1)
     else:
         spell_cast_index = GlobalSharedData[4].value
         spoken_command_index = GlobalSharedData[6].value
         return jsonify(
             timeRemaining=-1,
+            turnState=2,
             spellCast="" if spell_cast_index == -1 else SPOKEN_COMMANDS[spell_cast_index],
             score=GlobalSharedData[5].value,
             spokenCommand="" if spoken_command_index == -1 else SPOKEN_COMMANDS[spoken_command_index],
@@ -84,7 +85,7 @@ def get_test_input():
             spoken_command_index = i
             break
     GlobalSharedData[6].value = spoken_command_index
-    GlobalSharedData[3].value = 1
+    GlobalSharedData[3].value = 2
     return f"{result}, {result_score}, {speech}"
 
 
@@ -106,9 +107,9 @@ def start_system(
             print(f"Start turn for {turnLength.value} seconds.")
             t0 = time.time()
             timeStartedAt.value = t0
-            turnFinished.value = 0
+            turnFinished.value = 1
 
-            while turnFinished.value == 0:
+            while turnFinished.value == 1:
                 time.sleep(0.02)
             # TODO: how to handle interruptions? assume it won't happen?
 

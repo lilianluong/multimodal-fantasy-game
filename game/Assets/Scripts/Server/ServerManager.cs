@@ -48,10 +48,12 @@ public class ServerManager : MonoBehaviour
                         pollResponse = new PollTurnResponse();
                         if (rand > 0.4f)
                         {
+                            pollResponse.turnState = 1;
                             pollResponse.timeRemaining = 2f;
                         }
                         else
                         {
+                            pollResponse.turnState = 2;
                             pollResponse.timeRemaining = -1f;
                             pollResponse.spellCast = "cure";
                             pollResponse.score = 0.8f;

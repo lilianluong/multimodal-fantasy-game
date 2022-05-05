@@ -75,7 +75,12 @@ public class TutorialController : MonoBehaviour
                 {
                     PollTurnResponse response = serverManager.PollResponse;
                     serverManager.PolledTurn = false;
-                    if (response.timeRemaining >= 0)
+                    if (response.turnState == 0)
+                    {
+                        // Waiting for recording to start
+                        turnText.text = "Wait...";
+                    }
+                    else if (response.timeRemaining >= 0)
                     {
                         // Turn is still going, let's update the timer and wait
                         UpdateTurnTimer(response.timeRemaining);

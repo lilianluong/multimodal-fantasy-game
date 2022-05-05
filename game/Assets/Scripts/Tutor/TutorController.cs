@@ -68,7 +68,12 @@ public class TutorController : MonoBehaviour
                 {
                     PollTurnResponse response = serverManager.PollResponse;
                     serverManager.PolledTurn = false;
-                    if (response.timeRemaining >= 0)
+                    if (response.turnState == 0)
+                    {
+                        // Waiting for the recording to start, we chill
+                        uiController.UpdateWaitForTurn();
+                    }
+                    else if (response.timeRemaining >= 0)
                     {
                         // Turn is still going, let's update the timer and wait
                         uiController.UpdateTurnTimer(response.timeRemaining);

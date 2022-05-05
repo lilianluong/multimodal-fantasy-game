@@ -802,7 +802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 171563222843160485, guid: 884a4d676b6df8b4590ad2bcd767cfbd, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -80
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 171563222843160485, guid: 884a4d676b6df8b4590ad2bcd767cfbd, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1064,7 +1064,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 2
+  m_Text: Wait...
 --- !u!222 &1737455945
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1256,9 +1256,9 @@ MonoBehaviour:
     combination of these effects.\r Your goal is to bring your enemy to 0 HP - choose
     your spells wisely!\nThe quality of your spellcasting will impact the effectiveness
     of your spell - use the Spell Tutor and try to match the speed and shape of the
-    correct hand motions.\n\r\nAt any point, say \"Tutorial\" to view these instructions,
-    \"Spell Tutor\" to learn and practice spells, or \"Adventure\" to continue your
-    monster-slaying journey."
+    correct hand motions.\n\r\nInstead of a spell incantation, say \"Tutorial\" to
+    view these instructions, \"Spell Tutor\" to learn and practice spells, or \"Adventure\"
+    to continue your monster-slaying journey."
 --- !u!222 &1919487125
 CanvasRenderer:
   m_ObjectHideFlags: 0

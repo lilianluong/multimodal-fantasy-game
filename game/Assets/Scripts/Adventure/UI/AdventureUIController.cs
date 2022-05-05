@@ -54,6 +54,11 @@ public class AdventureUIController : MonoBehaviour
         SceneManager.LoadScene("Tutorial");
     }
 
+    public void UpdateWaitForTurn()
+    {
+        turnText.text = "Get ready...";
+    }
+
     public void UpdateTurnTimer(float timeRemaining)
     {
         if (timeRemaining < 0)
