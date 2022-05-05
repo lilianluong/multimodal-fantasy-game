@@ -203,15 +203,18 @@ public class AdventureController : MonoBehaviour
     {
         Debug.Log("Enemy turn!");
         uiController.UpdateTurnToEnemy(rightCharacter.Name);
-        double randomNum = Random.value;
+        float randomNum = Random.value;
 
-        if (randomNum <= 1f)  // note that Random.value is [0f, 1f] INCLUSIVE for some inane reason
+        if (randomNum <= 0.8f)  // note that Random.value is [0f, 1f] INCLUSIVE for some inane reason
         {
             // Attack
-            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage);
+            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage * Random.value);
             uiController.CreateNotifier($"You took {Mathf.RoundToInt(dealtDamage)} damage", forPlayer: true);
+        } else {
+            // Heal
+            float healAmount = rightCharacterState.Heal(rightCharacter.AttackDamage * Random.value);
+            uiController.CreateNotifier($"{rightCharacter.Name} healed for {Mathf.RoundToInt(healAmount)} HP", forPlayer: false);
         }
-        // add extra cases if we want
 
         uiController.GetPlayerHealthBar().SetHealth(leftCharacterState.GetHealth().Item1);
         // uiController.GetEnemyHealthBar().SetHealth(rightCharacterState.GetHealth().Item1);
