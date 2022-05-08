@@ -168,13 +168,13 @@ public class AdventureController : MonoBehaviour
                 uiController.UpdateSpellLog(new SpellcastInfo("FLAME", response.score, new SpellEffect(SpellEffectType.Damage, flameDamage)));
                 break;
             case "cure":
-                float curedHeal = leftCharacterState.Heal(response.score * 25);
+                float curedHeal = leftCharacterState.Heal(response.score * 30);
                 uiController.CreateNotifier($"You healed for {Mathf.RoundToInt(curedHeal)} HP", forPlayer: true);
                 uiController.ColorFlare(0.2f, 1f, 0.2f);
                 uiController.UpdateSpellLog(new SpellcastInfo("CURE", response.score, new SpellEffect(SpellEffectType.Heal, curedHeal)));
                 break;
             case "lightning":
-                float lightningDamage = rightCharacterState.TakeDamage(response.score * (leftCharacter.AttackDamage + (6 * Random.value - 3)));
+                float lightningDamage = rightCharacterState.TakeDamage(response.score * (leftCharacter.AttackDamage + (6 * Random.value - 2)));
                 uiController.CreateNotifier($"{rightCharacter.Name} took {Mathf.RoundToInt(lightningDamage)} damage", forPlayer: false);
                 uiController.ColorFlare(1f, 1f, 0.5f);
                 uiController.UpdateSpellLog(new SpellcastInfo("LIGHTNING", response.score, new SpellEffect(SpellEffectType.Damage, lightningDamage)));
@@ -208,11 +208,13 @@ public class AdventureController : MonoBehaviour
         if (randomNum <= 0.8f)  // note that Random.value is [0f, 1f] INCLUSIVE for some inane reason
         {
             // Attack
-            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage * (1f + Random.value * 0.5));
+            float dealtDamage = leftCharacterState.TakeDamage(rightCharacter.AttackDamage * (0.9f + Random.value * 0.5f));
             uiController.CreateNotifier($"You took {Mathf.RoundToInt(dealtDamage)} damage", forPlayer: true);
-        } else {
+        }
+        else
+        {
             // Heal
-            float healAmount = rightCharacterState.Heal(rightCharacter.AttackDamage * Random.value);
+            float healAmount = rightCharacterState.Heal(rightCharacter.AttackDamage * (0.2f + Random.value));
             uiController.CreateNotifier($"{rightCharacter.Name} healed for {Mathf.RoundToInt(healAmount)} HP", forPlayer: false);
         }
 
