@@ -570,10 +570,10 @@ public class SpellExamples
         return new List<string>() {
             "flame",
             "cure",
-            "shield",
+//            "shield",
             "lightning",
-            "leech",
-            "hide"
+            "leech"
+//            "hide"
         };
         // return new List<string>(templates.Keys);
     }
