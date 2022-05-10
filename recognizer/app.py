@@ -129,7 +129,7 @@ def start_system(
 def main():
     p1 = Process(target=start_system, args=GlobalSharedData)
     p1.start()
-    app.run(debug=True)
+    app.run(host='127.0.0.1', port=5000)
 
 
 if __name__ == "__main__":
