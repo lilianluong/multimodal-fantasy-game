@@ -24,7 +24,7 @@ Replace `pip install ...` and `python ...` commands in the below instructions de
  2. Start `app.py` from the `recognizer/` directory:
     - `cd recognizer` and then `python app.py`
  3. Make sure the Flask app is running at http://127.0.0.1:5000/ (which should just print "Hello, world!")
-    - Make sure that "Starting system..." is printed in the terminal before proceeding
+    - Make sure that "Recorder ready" is printed in the terminal before proceeding
     (if you do not reach this point, check the Troubleshooting section below)
  4. Navigate to `game/Builds/` (i.e. using File Explorer) and run `Kalpana.exe`
  5. To quit the game, press Esc twice at any point in-game.
@@ -58,7 +58,7 @@ Python 3.8 x64, try this: https://github.com/ano0002/Leap-Motion-Python-3.8).
 **I don't see a timer in the game, or the timer is stuck at the same number.**
 
 The game isn't communicating properly with the server. Make sure the server is running at http://127.0.0.1:5000/. Try
-closing the game and the Flask app, then run the Flask app, make sure "Starting system..." is printed in the terminal,
+closing the game and the Flask app, then run the Flask app, make sure "Recorder ready" is printed in the terminal,
 and **then** start the game executable again.
 
 **The game won't detect that I casted a spell.**
